@@ -23,11 +23,6 @@ public class ScheduleTaskServiceTest extends AbstractTriggerTaskScheduler {
     }
 
     @Override
-    public Long period() {
-        return null;
-    }
-
-    @Override
     public Trigger getTrigger() {
         return triggerContext -> {
             CronTrigger cronTrigger = new CronTrigger("0/5 * * * * ?");

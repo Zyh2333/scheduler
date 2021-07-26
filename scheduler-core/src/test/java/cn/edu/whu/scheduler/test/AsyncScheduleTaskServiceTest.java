@@ -18,13 +18,8 @@ public class AsyncScheduleTaskServiceTest extends AbstractAsyncTriggerTaskSchedu
     @Override
     public Runnable doAsyncTask() {
         return () -> {
-            System.out.println("trigger task execute");
+            System.out.println("async trigger task execute");
         };
-    }
-
-    @Override
-    public Long period() {
-        return null;
     }
 
     @Override
