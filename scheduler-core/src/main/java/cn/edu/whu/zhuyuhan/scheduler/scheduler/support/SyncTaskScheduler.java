@@ -1,43 +1,43 @@
-package cn.edu.whu.zhuyuhan.scheduler.registrar;
+package cn.edu.whu.zhuyuhan.scheduler.scheduler.support;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.Ordered;
-import org.springframework.scheduling.TaskScheduler;
+import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
+import cn.edu.whu.zhuyuhan.scheduler.registrar.AbstractTaskRegistrar;
+import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
 
 /**
+ * sync task
+ * <p>
  * Author: Zhu yuhan
  * Email: zhuyuhan2333@qq.com
- * Date: 2021/6/18 21:44
+ * Date: 2021/7/26 11:09
  **/
-public abstract class AbstractTaskScheduler implements InitializingBean, Ordered {
+public abstract class SyncTaskScheduler extends AbstractTaskRegistrar {
 
-    private TaskScheduler taskScheduler;
+    private org.springframework.scheduling.TaskScheduler taskScheduler;
 
     private ScheduledExecutorService executorService;
 
     protected ScheduledTaskRegistrar scheduledTaskRegistrar = new ScheduledTaskRegistrar();
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public String kindMatch() {
+        return TaskSchedulerKindConstant.SYNC_TASK_SCHEDULER;
+    }
+
+    @Override
+    public void schedule(@Nullable Long period) {
         initTaskRegistrar();
         schedule();
     }
 
-    @Override
-    public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE;
-    }
-
     private void initTaskRegistrar() {
         if (getTaskExecutor() == null) {
-            this.executorService = new ScheduledThreadPoolExecutor(1, getThreadFactory());
+            this.executorService = new ScheduledThreadPoolExecutor(DEFAULT_POOL_SIZE, getThreadFactory());
         }
         this.taskScheduler = new ConcurrentTaskScheduler(executorService);
         scheduledTaskRegistrar.setTaskScheduler(taskScheduler);
@@ -45,10 +45,6 @@ public abstract class AbstractTaskScheduler implements InitializingBean, Ordered
 
     protected ScheduledExecutorService getTaskExecutor() {
         return null;
-    }
-
-    protected ThreadFactory getThreadFactory() {
-        return Executors.defaultThreadFactory();
     }
 
     protected abstract void schedule();

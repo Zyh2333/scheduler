@@ -9,4 +9,8 @@ public interface Task {
 
     Runnable doTask();
 
+    Boolean async();
+
+    Long period();
+
 }

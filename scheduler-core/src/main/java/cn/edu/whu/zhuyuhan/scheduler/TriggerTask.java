@@ -11,4 +11,9 @@ public interface TriggerTask extends Task{
 
     Trigger getTrigger();
 
+    // TODO 时间管理
+    @Override
+    default Long period() {
+        return null;
+    }
 }
