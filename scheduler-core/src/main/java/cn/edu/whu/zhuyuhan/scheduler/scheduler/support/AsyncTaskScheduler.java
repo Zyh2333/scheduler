@@ -1,5 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.support;
 
+import cn.edu.whu.zhuyuhan.scheduler.Task;
 import cn.edu.whu.zhuyuhan.scheduler.async.AsyncTask;
 import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.AbstractTaskRegistrar;
@@ -22,7 +23,7 @@ public abstract class AsyncTaskScheduler<P> extends AbstractTaskRegistrar implem
     }
 
     @Override
-    public void schedule(Long period) {
+    public void schedule(Task task) {
         Assert.isTrue(async(), "schedule async switch is closed");
         this.scheduleAsyncInner();
     }

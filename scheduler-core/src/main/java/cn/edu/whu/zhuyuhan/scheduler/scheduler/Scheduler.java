@@ -1,5 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler;
 
+import cn.edu.whu.zhuyuhan.scheduler.Task;
+
 /**
  * Author: Zhu yuhan
  * Email: zhuyuhan2333@qq.com
@@ -7,6 +9,6 @@ package cn.edu.whu.zhuyuhan.scheduler.scheduler;
  **/
 public interface Scheduler {
 
-    void schedule(Long period);
+    void schedule(Task task);
 
 }

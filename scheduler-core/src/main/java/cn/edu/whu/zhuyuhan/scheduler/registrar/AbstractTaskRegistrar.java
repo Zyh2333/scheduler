@@ -22,10 +22,9 @@ public abstract class AbstractTaskRegistrar extends TaskScheduler implements Ini
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        task = this;
-        log.info("task scheduler init success with task {}", task);
-        Assert.notNull(task, "task can't be null");
-        schedule(task.period());
+        log.info("task scheduler init success with task {}", this);
+        Assert.notNull(this, "task can't be null");
+        schedule(this);
     }
 
     @Override

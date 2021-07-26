@@ -1,8 +1,8 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.support;
 
+import cn.edu.whu.zhuyuhan.scheduler.Task;
 import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.AbstractTaskRegistrar;
-import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
@@ -30,7 +30,7 @@ public abstract class SyncTaskScheduler extends AbstractTaskRegistrar {
     }
 
     @Override
-    public void schedule(@Nullable Long period) {
+    public void schedule(Task task) {
         initTaskRegistrar();
         schedule();
     }
