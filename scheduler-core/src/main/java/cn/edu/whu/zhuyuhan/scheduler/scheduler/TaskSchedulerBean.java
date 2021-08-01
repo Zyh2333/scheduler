@@ -51,6 +51,7 @@ public class TaskSchedulerBean {
             Task taskAnno = m.getAnnotation(Task.class);
             Async asyncAnno = m.getAnnotation(Async.class);
             scheduleComponent.addTask((Runnable) m.invoke(scheduleComponent.getBean()), taskAnno, asyncAnno);
+            log.info("register task method {} in bean {} success", m, scheduleComponent.getBean());
         }
         for (ScheduleComponentTaskInstance taskInstance : scheduleComponent.getTasks()) {
             // async
