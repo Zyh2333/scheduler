@@ -7,10 +7,6 @@ package cn.edu.whu.zhuyuhan.scheduler;
  **/
 public interface Task {
 
-    Runnable doTask();
-
-    Boolean async();
-
-    Long period();
+    Runnable task();
 
 }

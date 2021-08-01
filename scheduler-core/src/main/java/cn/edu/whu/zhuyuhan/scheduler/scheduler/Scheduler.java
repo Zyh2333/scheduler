@@ -1,6 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler;
 
-import cn.edu.whu.zhuyuhan.scheduler.Task;
+import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
 
 /**
  * Author: Zhu yuhan
@@ -9,6 +9,6 @@ import cn.edu.whu.zhuyuhan.scheduler.Task;
  **/
 public interface Scheduler {
 
-    void schedule(Task task);
+    void schedule(ScheduleComponentTaskInstance taskInstance);
 
 }

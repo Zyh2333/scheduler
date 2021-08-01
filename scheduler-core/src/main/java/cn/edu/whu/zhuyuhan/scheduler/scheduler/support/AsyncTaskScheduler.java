@@ -1,12 +1,14 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.support;
 
-import cn.edu.whu.zhuyuhan.scheduler.Task;
-import cn.edu.whu.zhuyuhan.scheduler.async.AsyncTask;
 import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
-import cn.edu.whu.zhuyuhan.scheduler.registrar.AbstractTaskRegistrar;
+import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.AbstractTaskScheduler;
+import cn.edu.whu.zhuyuhan.scheduler.thread.factory.support.AsyncTaskThreadFactory;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.util.Assert;
+
+import java.util.concurrent.ThreadFactory;
 
 /**
  * sync task
@@ -15,37 +17,24 @@ import org.springframework.util.Assert;
  * Email: zhuyuhan2333@qq.com
  * Date: 2021/7/26 11:09
  **/
-public abstract class AsyncTaskScheduler<P> extends AbstractTaskRegistrar implements AsyncTask {
+public class AsyncTaskScheduler<P> extends AbstractTaskScheduler {
 
     @Override
-    public String kindMatch() {
+    protected ThreadFactory getThreadFactory() {
+        return new AsyncTaskThreadFactory();
+    }
+
+    @Override
+    public void schedule(ScheduleComponentTaskInstance taskInstance) {
+        Assert.isTrue(taskInstance.isAsync(), "schedule async switch is closed");
+        // TODO NEED FIX 单次异步任务 -> 异步定时任务
+        log.info("TaskScheduleComponent inited success with taskInstance{}", taskInstance);
+        AsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor(getThreadFactory());
+        asyncTaskExecutor.submit(taskInstance.getTask());
+    }
+
+    @Override
+    protected String kindMatch() {
         return TaskSchedulerKindConstant.ASYNC_TASK_SCHEDULER;
     }
-
-    @Override
-    public void schedule(Task task) {
-        Assert.isTrue(async(), "schedule async switch is closed");
-        this.scheduleAsyncInner();
-    }
-
-    private void scheduleAsyncInner() {
-        // TODO NEED FIX 单次异步任务 -> 异步定时任务
-        AsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor(getThreadFactory());
-        asyncTaskExecutor.submit(doTask());
-
-//        org.springframework.scheduling.TaskScheduler taskScheduler = new ConcurrentTaskScheduler(asyncTaskExecutor, new ScheduledThreadPoolExecutor(DEFAULT_POOL_SIZE, getThreadFactory()));
-//        taskScheduler.schedule(doTask(), new Date(new Date().getTime() + period()));
-    }
-
-    @Override
-    public Runnable doTask() {
-        return doAsyncTask();
-    }
-
-    protected abstract void schedule();
-
-    protected abstract Runnable doAsyncTask();
-
-    protected abstract Long getPeriod(P period);
-
 }

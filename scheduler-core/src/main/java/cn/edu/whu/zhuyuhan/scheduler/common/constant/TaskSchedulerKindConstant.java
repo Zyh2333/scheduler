@@ -10,4 +10,6 @@ public class TaskSchedulerKindConstant {
     public static final String ASYNC_TASK_SCHEDULER = "async_task_scheduler";
 
     public static final String SYNC_TASK_SCHEDULER = "sync_task_scheduler";
+
+    public static final String SYNC_TASK_SCHEDULER_SPRING = "sync_task_scheduler_spring";
 }

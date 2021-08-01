@@ -1,7 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.factory;
 
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.Scheduler;
-import cn.edu.whu.zhuyuhan.scheduler.scheduler.support.TaskSchedulerEnum;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerEnum;
 
 /**
  * Author: Zhu yuhan
@@ -13,4 +13,5 @@ public class TaskSchedulerFactory {
     public static Class<? extends Scheduler> getTaskScheduler(String kind) {
         return TaskSchedulerEnum.getTaskSchedulerInstance(kind);
     }
+
 }

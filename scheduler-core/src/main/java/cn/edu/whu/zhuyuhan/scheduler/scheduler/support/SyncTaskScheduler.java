@@ -1,13 +1,11 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.support;
 
-import cn.edu.whu.zhuyuhan.scheduler.Task;
 import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
-import cn.edu.whu.zhuyuhan.scheduler.registrar.AbstractTaskRegistrar;
-import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
-import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.AbstractTaskScheduler;
+import cn.edu.whu.zhuyuhan.scheduler.thread.factory.support.SyncTaskThreadFactory;
 
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * sync task
@@ -16,37 +14,21 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  * Email: zhuyuhan2333@qq.com
  * Date: 2021/7/26 11:09
  **/
-public abstract class SyncTaskScheduler extends AbstractTaskRegistrar {
-
-    private org.springframework.scheduling.TaskScheduler taskScheduler;
-
-    private ScheduledExecutorService executorService;
-
-    protected ScheduledTaskRegistrar scheduledTaskRegistrar = new ScheduledTaskRegistrar();
+public abstract class SyncTaskScheduler extends AbstractTaskScheduler {
 
     @Override
     public String kindMatch() {
         return TaskSchedulerKindConstant.SYNC_TASK_SCHEDULER;
     }
 
-    @Override
-    public void schedule(Task task) {
-        initTaskRegistrar();
-        schedule();
-    }
-
-    private void initTaskRegistrar() {
-        if (getTaskExecutor() == null) {
-            this.executorService = new ScheduledThreadPoolExecutor(DEFAULT_POOL_SIZE, getThreadFactory());
-        }
-        this.taskScheduler = new ConcurrentTaskScheduler(executorService);
-        scheduledTaskRegistrar.setTaskScheduler(taskScheduler);
-    }
-
     protected ScheduledExecutorService getTaskExecutor() {
         return null;
     }
 
-    protected abstract void schedule();
+    @Override
+    protected ThreadFactory getThreadFactory() {
+        return new SyncTaskThreadFactory();
+    }
+
 
 }
