@@ -9,4 +9,7 @@ public interface Task {
 
     Runnable task();
 
+    // TODO 动态限流
+    boolean isOpen();
+
 }

@@ -1,5 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler.common.util.cron;
 
+import org.springframework.scheduling.support.CronSequenceGenerator;
+
 /**
  * Author: Zhu yuhan
  * Email: zhuyuhan2333@qq.com
@@ -8,7 +10,6 @@ package cn.edu.whu.zhuyuhan.scheduler.common.util.cron;
 public class CronUtils {
 
     public static boolean valid(String cron) {
-        // TODO
-        return true;
+        return CronSequenceGenerator.isValidExpression(cron);
     }
 }
