@@ -33,16 +33,19 @@ public class AsyncTaskScheduler<P> extends AbstractTaskScheduler {
         // TODO NEED OPTIMIZE 异步定时任务间隔时间算法优化
         CronSequenceGenerator cronSequenceGenerator = new CronSequenceGenerator(taskInstance.getCron());
         log.info("TaskScheduleComponent inited success with taskInstance{}", taskInstance);
-        Date start = new Date();
-        Date submitTime = start;
-        while (true) {
-            if (Math.abs((submitTime.getTime() - new Date().getTime())) > CronConstant.MIN_SUBMIT_GAP) continue;
-            Date next = cronSequenceGenerator.next(start);
-            start = next;
-            submitTime = next;
-            AsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor(getThreadFactory());
-            asyncTaskExecutor.submit(taskInstance.getTask());
-        }
+        AsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
+        asyncTaskExecutor.submit(() -> {
+            Date start = new Date();
+            Date submitTime = start;
+            while (true) {
+                if (Math.abs((submitTime.getTime() - new Date().getTime())) > CronConstant.MIN_SUBMIT_GAP) continue;
+                Date next = cronSequenceGenerator.next(start);
+                start = next;
+                submitTime = next;
+                AsyncTaskExecutor asyncTaskExecutorInner = new SimpleAsyncTaskExecutor(getThreadFactory());
+                asyncTaskExecutorInner.submit(taskInstance.getTask());
+            }
+        });
     }
 
     @Override
