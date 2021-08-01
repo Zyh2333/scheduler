@@ -7,7 +7,7 @@
     <groupId>cn.edu.whu.zhuyuhan</groupId>
     <artifactId>scheduler</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <modules>
         <module>scheduler-core</module>
         <module>scheduler-spring-boot-starter</module>
@@ -16,7 +16,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <project.version>0.0.3</project.version>
+        <project.version>0.0.4</project.version>
     </properties>
 
     <dependencyManagement>
@@ -36,7 +36,7 @@
             <dependency>
                 <groupId>cn.edu.whu.zhuyuhan</groupId>
                 <artifactId>scheduler-spring-boot-starter</artifactId>
-                <version>0.0.1</version>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
