@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * Email: zhuyuhan2333@qq.com
  * Date: 2021/7/31 21:53
  **/
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Component
 public @interface TaskScheduleComponent {
