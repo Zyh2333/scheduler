@@ -13,7 +13,9 @@ public abstract class AbstractThreadFactory implements ThreadFactory {
 
     protected static final String TOTAL_PREFIX = "scheduler-";
 
-    // 潜在隐患，大约138 * 2^32 次方年之后可能会出错（1s一次的定时任务）
+    protected static final String THREAD_PREFIX = "-thread";
+
+    // 潜在隐患，大约138 * 2^32 次方年之后可能会出错（1个1s一次的定时任务，共用会几何倍数递减，但是应该也够用）
     protected static final AtomicLong POOL_NUM = new AtomicLong(1);
 
     protected AtomicInteger threadNum = new AtomicInteger(1);
@@ -23,7 +25,12 @@ public abstract class AbstractThreadFactory implements ThreadFactory {
     protected final String NAME_PREFIX;
 
     public AbstractThreadFactory() {
-         NAME_PREFIX = TOTAL_PREFIX + getThreadGroup() + "-" + "pool" + "-" + POOL_NUM.getAndIncrement();
+        NAME_PREFIX = new StringBuilder(TOTAL_PREFIX)
+                .append(getThreadGroup())
+                .append("-pool-")
+                .append(POOL_NUM.getAndIncrement())
+                .append(THREAD_PREFIX)
+                .toString();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler;
 
+import cn.edu.whu.zhuyuhan.scheduler.common.util.TaskSchedulerUtils;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.factory.TaskSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,5 +26,12 @@ public abstract class AbstractTaskScheduler implements Scheduler {
     protected abstract String kindMatch();
 
     protected abstract ThreadFactory getThreadFactory();
+
+    protected Integer getThreadSize() {
+        if (TaskSchedulerUtils.isThreadSizeValid(TaskSchedulerBean.CONFIG_POOL_SIZE)) {
+            return TaskSchedulerBean.CONFIG_POOL_SIZE;
+        }
+        return TaskSchedulerBean.DEFAULT_POOL_SIZE;
+    }
 
 }

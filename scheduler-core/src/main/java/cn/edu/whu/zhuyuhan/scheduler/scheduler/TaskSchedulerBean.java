@@ -30,12 +30,16 @@ public class TaskSchedulerBean {
 
     private static final Logger log = LoggerFactory.getLogger(TaskSchedulerBean.class);
 
-    // TODO 可配置
     public static final Integer DEFAULT_POOL_SIZE = 1;
+
+    public static final Integer MAX_POOL_SIZE = 10;
+
+    // TODO 同步任务用不着，异步任务不需要
+    public static Integer CONFIG_POOL_SIZE = 0;
 
     public void schedule() throws InvocationTargetException, IllegalAccessException {
         for (ScheduleComponent value : ScheduleComponentRegistrar.componentMap.values()) {
-            // TODO 动态降级
+            // TODO 动态降级 (结合配置中心)
             if (!value.isSchedule()) continue;
             if (!this.schedule(value)) {
                 log.warn("ScheduleComponent bean inited with empty task: {}", value.getBean());

@@ -8,8 +8,6 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import static cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean.DEFAULT_POOL_SIZE;
-
 /**
  * Author: Zhu yuhan
  * Email: zhuyuhan2333@qq.com
@@ -27,7 +25,7 @@ public class SpringSyncCronTaskScheduler extends SpringSyncTaskScheduler {
         log.info("TaskScheduleComponent init success with {}", taskInstance);
         ScheduledTaskRegistrar scheduledTaskRegistrar = new ScheduledTaskRegistrar();
         org.springframework.scheduling.TaskScheduler taskScheduler;
-        ScheduledExecutorService executorService = getTaskExecutor() == null ? new ScheduledThreadPoolExecutor(DEFAULT_POOL_SIZE, getThreadFactory()) : getTaskExecutor();
+        ScheduledExecutorService executorService = getTaskExecutor() == null ? new ScheduledThreadPoolExecutor(getThreadSize(), getThreadFactory()) : getTaskExecutor();
         taskScheduler = new ConcurrentTaskScheduler(executorService);
         scheduledTaskRegistrar.setTaskScheduler(taskScheduler);
         scheduledTaskRegistrar.addCronTask(taskInstance.getTask(), taskInstance.getCron());
