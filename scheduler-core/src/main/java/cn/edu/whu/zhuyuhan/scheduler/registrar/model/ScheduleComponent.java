@@ -1,6 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler.registrar.model;
 
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Async;
+import cn.edu.whu.zhuyuhan.scheduler.annotation.Distributed;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Task;
 import org.springframework.util.StringUtils;
 
@@ -33,20 +34,28 @@ public class ScheduleComponent {
 
     private boolean schedule;
 
-    public ScheduleComponent(String name, String cron, boolean async, Object bean, boolean schedule) {
+    private boolean distributed = false;
+
+    public ScheduleComponent(String name, String cron, boolean async, Object bean, boolean schedule, boolean distributed) {
         this.name = name;
         this.cron = cron;
         this.async = async;
         this.bean = bean;
         this.schedule = schedule;
         this.tasks = new ArrayList<>(MAX_COMPONENT);
+        this.distributed = distributed;
     }
+
+    public ScheduleComponent(String name, String cron, boolean async, Object bean, boolean schedule) {
+        this(name, cron, async, bean, schedule, false);
+    }
+
 
     public ScheduleComponent(String cron, boolean async, Object bean, boolean schedule) {
         this(PREFIX + count++, cron, async, bean, schedule);
     }
 
-    public void addTask(Runnable task, Task taskAnno, Async asyncAnno) {
+    public void addTask(Runnable task, Task taskAnno, Async asyncAnno, Distributed distributedAnno) {
         if (task != null) {
             ScheduleComponentTaskInstance taskInstance =
                     new ScheduleComponentTaskInstance(
@@ -54,7 +63,8 @@ public class ScheduleComponent {
                             StringUtils.isEmpty(taskAnno.name()) ? null : taskAnno.name(),
                             StringUtils.isEmpty(taskAnno.cron()) ? cron : taskAnno.cron(),
                             this.parseAsync(taskAnno, asyncAnno),
-                            task
+                            task,
+                            distributedAnno != null
                     );
             this.tasks.add(taskInstance);
         }
@@ -106,6 +116,14 @@ public class ScheduleComponent {
 
     public void setTasks(List<ScheduleComponentTaskInstance> tasks) {
         this.tasks = tasks;
+    }
+
+    public boolean isDistributed() {
+        return distributed;
+    }
+
+    public void setDistributed(boolean distributed) {
+        this.distributed = distributed;
     }
 
     private boolean parseAsync(Task taskAnno, Async asyncAnno) {

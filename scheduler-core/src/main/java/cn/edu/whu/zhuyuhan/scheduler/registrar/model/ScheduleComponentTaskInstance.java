@@ -19,12 +19,19 @@ public class ScheduleComponentTaskInstance {
 
     private Runnable task;
 
-    public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task) {
+    private boolean distributed = false;
+
+    public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task, boolean distributed) {
         this.parentName = parentName;
         this.name = name == null ? String.valueOf(count++) : name;
         this.cron = cron;
         this.async = async;
         this.task = task;
+        this.distributed = distributed;
+    }
+
+    public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task) {
+        this(parentName, name, cron, async, task, false);
     }
 
     public ScheduleComponentTaskInstance(String parentName, String cron, boolean async, Runnable task) {
@@ -69,5 +76,36 @@ public class ScheduleComponentTaskInstance {
 
     public void setParentName(String parentName) {
         this.parentName = parentName;
+    }
+
+    public boolean isDistributed() {
+        return distributed;
+    }
+
+    public void setDistributed(boolean distributed) {
+        this.distributed = distributed;
+    }
+
+    @Override
+    public String toString() {
+        return "ScheduleComponentTaskInstance{" +
+                "name='" + name + '\'' +
+                ", cron='" + cron + '\'' +
+                ", async=" + async +
+                ", distributed=" + distributed +
+                ", task=" + task +
+                '}';
+    }
+
+    /**
+     * 映射到具体调度器
+     *
+     * @return
+     */
+    public String map() {
+        return new StringBuilder()
+                .append(async ? "async" : "sync")
+                .append(distributed ? "distributed" : "")
+                .toString();
     }
 }

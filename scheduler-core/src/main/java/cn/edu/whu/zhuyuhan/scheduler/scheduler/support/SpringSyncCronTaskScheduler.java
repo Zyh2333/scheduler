@@ -1,6 +1,5 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.support;
 
-import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
@@ -14,11 +13,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  * Date: 2021/6/18 21:44
  **/
 public class SpringSyncCronTaskScheduler extends SpringSyncTaskScheduler {
-
-    @Override
-    public String kindMatch() {
-        return TaskSchedulerKindConstant.SYNC_TASK_SCHEDULER_SPRING;
-    }
 
     @Override
     public void schedule(ScheduleComponentTaskInstance taskInstance) {

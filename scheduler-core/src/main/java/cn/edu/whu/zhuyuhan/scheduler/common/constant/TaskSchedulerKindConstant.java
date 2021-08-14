@@ -7,9 +7,14 @@ package cn.edu.whu.zhuyuhan.scheduler.common.constant;
  **/
 public class TaskSchedulerKindConstant {
 
-    public static final String ASYNC_TASK_SCHEDULER = "async_task_scheduler";
+    public static final String ASYNC_TASK_SCHEDULER = "async";
 
-    public static final String SYNC_TASK_SCHEDULER = "sync_task_scheduler";
+    public static final String SYNC_TASK_SCHEDULER = "sync";
 
-    public static final String SYNC_TASK_SCHEDULER_SPRING = "sync_task_scheduler_spring";
+//    public static final String SYNC_TASK_SCHEDULER_SPRING = "sync_spring";
+
+    public static final String DISTRIBUTED_SYNC_TASK_SCHEDULER = "syncdistributed";
+
+    public static final String DISTRIBUTED_ASYNC_TASK_SCHEDULER = "asyncdistributed";
+
 }

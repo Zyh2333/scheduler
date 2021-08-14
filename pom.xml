@@ -38,6 +38,12 @@
                 <artifactId>scheduler-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>cn.edu.whu.zhuyuhan</groupId>
+                <artifactId>rocket-mq-sdk</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

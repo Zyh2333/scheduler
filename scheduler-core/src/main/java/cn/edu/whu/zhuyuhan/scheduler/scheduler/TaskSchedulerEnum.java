@@ -1,9 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler;
 
 import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
-import cn.edu.whu.zhuyuhan.scheduler.scheduler.support.AsyncTaskScheduler;
-import cn.edu.whu.zhuyuhan.scheduler.scheduler.support.SpringSyncCronTaskScheduler;
-import cn.edu.whu.zhuyuhan.scheduler.scheduler.support.SyncTaskScheduler;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.support.*;
 import org.springframework.util.StringUtils;
 
 /**
@@ -15,7 +13,11 @@ public enum TaskSchedulerEnum {
 
     ASYNC_TASK_SCHEDULER(AsyncTaskScheduler.class, TaskSchedulerKindConstant.ASYNC_TASK_SCHEDULER),
 
-    SYNC_TASK_SCHEDULER(SpringSyncCronTaskScheduler.class, TaskSchedulerKindConstant.SYNC_TASK_SCHEDULER);
+    SYNC_TASK_SCHEDULER(SpringSyncCronTaskScheduler.class, TaskSchedulerKindConstant.SYNC_TASK_SCHEDULER),
+
+    DISTRIBUTED_SYNC_TASK_SCHEDULER(DistributedSyncTaskScheduler.class, TaskSchedulerKindConstant.DISTRIBUTED_SYNC_TASK_SCHEDULER),
+
+    DISTRIBUTED_ASYNC_TASK_SCHEDULER(DistributedAsyncTaskScheduler.class, TaskSchedulerKindConstant.DISTRIBUTED_ASYNC_TASK_SCHEDULER);
 
     private Class<? extends Scheduler> taskScheduler;
 
@@ -28,14 +30,14 @@ public enum TaskSchedulerEnum {
 
     public static Class<? extends Scheduler> getTaskSchedulerInstance(String kind) {
         if (StringUtils.isEmpty(kind)) {
-            return SyncTaskScheduler.class;
+            return SpringSyncCronTaskScheduler.class;
         }
         for (TaskSchedulerEnum value : TaskSchedulerEnum.values()) {
             if (kind.equals(value.kind)) {
                 return value.taskScheduler;
             }
         }
-        return SyncTaskScheduler.class;
+        return SpringSyncCronTaskScheduler.class;
     }
 
     public Class<? extends Scheduler> getTaskScheduler() {

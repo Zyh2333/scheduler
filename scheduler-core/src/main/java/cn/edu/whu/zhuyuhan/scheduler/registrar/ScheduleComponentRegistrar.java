@@ -1,5 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.registrar;
 
+import cn.edu.whu.zhuyuhan.scheduler.annotation.Distributed;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.TaskScheduleComponent;
 import cn.edu.whu.zhuyuhan.scheduler.common.constant.CronConstant;
 import cn.edu.whu.zhuyuhan.scheduler.common.util.AnnotationUtils;
@@ -24,13 +25,17 @@ public class ScheduleComponentRegistrar {
         String cron = annotation.cron();
         boolean async = annotation.async();
         String name = annotation.name();
+        boolean distributed = annotation.distributed();
         if (StringUtils.isEmpty(cron)) {
             cron = CronConstant.EMPTY_CRON;
         }
         if (!async) {
             async = AnnotationUtils.isAnnotatedAsync(bean);
         }
-        ScheduleComponent scheduleComponent = new ScheduleComponent(name, cron, async, bean, annotation.schedule());
+        if (!distributed) {
+            distributed = AnnotationUtils.isAnnotatedSpecificAnnotation(bean, Distributed.class);
+        }
+        ScheduleComponent scheduleComponent = new ScheduleComponent(name, cron, async, bean, annotation.schedule(), distributed);
         componentMap.put(bean, scheduleComponent);
     }
 

@@ -20,7 +20,12 @@ import java.util.concurrent.ThreadFactory;
  * Email: zhuyuhan2333@qq.com
  * Date: 2021/7/26 11:09
  **/
-public class AsyncTaskScheduler<P> extends AbstractTaskScheduler {
+public class AsyncTaskScheduler extends AbstractTaskScheduler {
+
+    @Override
+    protected String kindMatch() {
+        return TaskSchedulerKindConstant.ASYNC_TASK_SCHEDULER;
+    }
 
     @Override
     protected ThreadFactory getThreadFactory() {
@@ -30,7 +35,7 @@ public class AsyncTaskScheduler<P> extends AbstractTaskScheduler {
     @Override
     public void schedule(ScheduleComponentTaskInstance taskInstance) {
         Assert.isTrue(taskInstance.isAsync(), "schedule async switch is closed");
-        // TODO NEED OPTIMIZE 异步定时任务间隔时间算法优化
+        // TODO NEED OPTIMIZE 异步定时任务间隔时间算法优化，现在时间不准
         CronSequenceGenerator cronSequenceGenerator = new CronSequenceGenerator(taskInstance.getCron());
         log.info("TaskScheduleComponent inited success with taskInstance{}", taskInstance);
         AsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
@@ -38,18 +43,13 @@ public class AsyncTaskScheduler<P> extends AbstractTaskScheduler {
             Date start = new Date();
             Date submitTime = start;
             while (true) {
+                // 如果提交任务时间与实际执行时间相差1s则继续循环
                 if (Math.abs((submitTime.getTime() - new Date().getTime())) > CronConstant.MIN_SUBMIT_GAP) continue;
-                Date next = cronSequenceGenerator.next(start);
-                start = next;
-                submitTime = next;
                 AsyncTaskExecutor asyncTaskExecutorInner = new SimpleAsyncTaskExecutor(getThreadFactory());
                 asyncTaskExecutorInner.submit(taskInstance.getTask());
+                submitTime = cronSequenceGenerator.next(submitTime);
             }
         });
     }
 
-    @Override
-    protected String kindMatch() {
-        return TaskSchedulerKindConstant.ASYNC_TASK_SCHEDULER;
-    }
 }
