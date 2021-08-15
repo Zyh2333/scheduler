@@ -13,7 +13,7 @@ public class TaskSchedulerBeanProperties {
     // TODO NEED OPTIMIZE 同步任务串行貌似没用
     private Integer threadSize;
 
-    private Boolean isOpen = Boolean.TRUE;
+    private Boolean enabled = Boolean.TRUE;
 
     public TaskSchedulerBeanProperties() {
     }
@@ -27,10 +27,19 @@ public class TaskSchedulerBeanProperties {
     }
 
     public Boolean getOpen() {
-        return isOpen;
+        return enabled;
     }
 
     public void setOpen(Boolean open) {
-        isOpen = open;
+        enabled = open;
     }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
 }

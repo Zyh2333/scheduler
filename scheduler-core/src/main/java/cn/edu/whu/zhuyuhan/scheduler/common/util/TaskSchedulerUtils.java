@@ -1,5 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.common.util;
 
+import cn.edu.whu.zhuyuhan.scheduler.common.constant.DistributedTaskSchedulerConstant;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean;
 
 /**
@@ -11,6 +12,14 @@ public class TaskSchedulerUtils {
 
     public static boolean isThreadSizeValid(Integer threadSize) {
         return threadSize <= TaskSchedulerBean.MAX_POOL_SIZE;
+    }
+
+    public static String createTopic(String topic) {
+        return DistributedTaskSchedulerConstant.TOPIC_PREFIX + topic;
+    }
+
+    public static String createGroup(String group) {
+        return DistributedTaskSchedulerConstant.CONSUMER_GROUP_PREFIX + group;
     }
 
 }

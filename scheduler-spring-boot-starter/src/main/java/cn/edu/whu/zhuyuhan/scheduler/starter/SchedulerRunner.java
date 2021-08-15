@@ -1,13 +1,11 @@
 package cn.edu.whu.zhuyuhan.scheduler.starter;
 
-import cn.edu.whu.zhuyuhan.scheduler.processor.TaskSchedulerBeanPostProcessor;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean;
 import cn.edu.whu.zhuyuhan.scheduler.starter.config.TaskSchedulerBeanProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -27,11 +25,6 @@ public class SchedulerRunner implements ApplicationRunner {
         this.initProperties(this.taskSchedulerBeanProperties);
         TaskSchedulerBean taskSchedulerBean = new TaskSchedulerBean();
         taskSchedulerBean.schedule();
-    }
-
-    @Bean
-    public TaskSchedulerBeanPostProcessor taskSchedulerBeanPostProcessor() {
-        return new TaskSchedulerBeanPostProcessor();
     }
 
     private void initProperties(TaskSchedulerBeanProperties taskSchedulerBeanProperties) {

@@ -1,5 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler;
 
+import cn.edu.whu.zhuyuhan.mq.rocketmq.producer.Producer;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Async;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Distributed;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Task;
@@ -11,6 +12,10 @@ import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstan
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.factory.TaskSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,9 +29,13 @@ import java.util.concurrent.Executors;
  * Email: zhuyuhan2333@qq.com
  * Date: 2021/7/26 11:09
  **/
-public class TaskSchedulerBean {
+public class TaskSchedulerBean implements ApplicationContextAware {
 
     private static final Logger log = LoggerFactory.getLogger(TaskSchedulerBean.class);
+
+    private static Producer producer;
+
+    private static RedisTemplate redisTemplate;
 
     public static final Integer DEFAULT_POOL_SIZE = 1;
 
@@ -67,10 +76,24 @@ public class TaskSchedulerBean {
             }
 
             Class<? extends Scheduler> taskSchedulerClass = TaskSchedulerFactory.getTaskScheduler(taskInstance.map());
+            // 默认newInstance会首先获取缓存的构造器
             Scheduler scheduler = taskSchedulerClass.newInstance();
             scheduler.schedule(taskInstance);
         }
         return true;
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        producer = applicationContext.getBean(Producer.class);
+        redisTemplate = applicationContext.getBean(RedisTemplate.class);
+    }
+
+    public static Producer getProducer() {
+        return producer;
+    }
+
+    public static RedisTemplate getRedisTemplate() {
+        return redisTemplate;
+    }
 }

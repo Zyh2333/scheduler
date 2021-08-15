@@ -3,11 +3,11 @@ package cn.edu.whu.zhuyuhan.scheduler.registrar.model;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Async;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Distributed;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Author: Zhu yuhan
@@ -16,11 +16,15 @@ import java.util.Objects;
  **/
 public class ScheduleComponent {
 
-    private static final String PREFIX = "schedule-";
+    private static final Logger log = LoggerFactory.getLogger(ScheduleComponent.class);
+
+    private static final String PREFIX = "schedule-component-";
 
     private static final Integer MAX_COMPONENT = 64;
 
     private static Integer count = 1;
+
+    private static final Map<String, ScheduleComponentTaskInstance> scheduleComponentTaskInstanceMap = new HashMap<>(MAX_COMPONENT << 2);
 
     private String name;
 
@@ -37,7 +41,7 @@ public class ScheduleComponent {
     private boolean distributed = false;
 
     public ScheduleComponent(String name, String cron, boolean async, Object bean, boolean schedule, boolean distributed) {
-        this.name = name;
+        this.name = StringUtils.isEmpty(name) ? PREFIX + count++ : name;
         this.cron = cron;
         this.async = async;
         this.bean = bean;
@@ -52,7 +56,7 @@ public class ScheduleComponent {
 
 
     public ScheduleComponent(String cron, boolean async, Object bean, boolean schedule) {
-        this(PREFIX + count++, cron, async, bean, schedule);
+        this(null, cron, async, bean, schedule);
     }
 
     public void addTask(Runnable task, Task taskAnno, Async asyncAnno, Distributed distributedAnno) {
@@ -66,6 +70,10 @@ public class ScheduleComponent {
                             task,
                             distributedAnno != null
                     );
+            String taskInstanceName = taskInstance.getName();
+            if (scheduleComponentTaskInstanceMap.putIfAbsent(taskInstanceName, taskInstance) != null) {
+                log.warn("ScheduleComponentTaskInstance:{} register failed because of duplicated name:{}", taskInstance, taskInstanceName);
+            }
             this.tasks.add(taskInstance);
         }
     }

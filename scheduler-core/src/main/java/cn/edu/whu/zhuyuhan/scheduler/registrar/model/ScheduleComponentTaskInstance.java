@@ -1,5 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler.registrar.model;
 
+import org.springframework.util.StringUtils;
+
 /**
  * Author: Zhu yuhan
  * Email: zhuyuhan2333@qq.com
@@ -7,7 +9,9 @@ package cn.edu.whu.zhuyuhan.scheduler.registrar.model;
  **/
 public class ScheduleComponentTaskInstance {
 
-    private static Integer count = 1;
+    private static final String PREFIX = "task-instance-";
+
+    private Integer count = 1;
 
     private String parentName;
 
@@ -23,7 +27,7 @@ public class ScheduleComponentTaskInstance {
 
     public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task, boolean distributed) {
         this.parentName = parentName;
-        this.name = name == null ? String.valueOf(count++) : name;
+        this.name = StringUtils.isEmpty(name) ? parentName + PREFIX + count++ : name;
         this.cron = cron;
         this.async = async;
         this.task = task;
