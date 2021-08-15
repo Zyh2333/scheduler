@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
  **/
 public class ScheduleComponentTaskInstance {
 
-    private static final String PREFIX = "task-instance-";
+    private static final String PREFIX = "-task-instance-";
 
     private Integer count = 1;
 

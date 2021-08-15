@@ -68,7 +68,7 @@ public class ScheduleComponent {
                             StringUtils.isEmpty(taskAnno.cron()) ? cron : taskAnno.cron(),
                             this.parseAsync(taskAnno, asyncAnno),
                             task,
-                            distributedAnno != null
+                            this.parseDistributed(taskAnno, distributedAnno)
                     );
             String taskInstanceName = taskInstance.getName();
             if (scheduleComponentTaskInstanceMap.putIfAbsent(taskInstanceName, taskInstance) != null) {
@@ -137,5 +137,10 @@ public class ScheduleComponent {
     private boolean parseAsync(Task taskAnno, Async asyncAnno) {
         // 判断方法和类注解async字段值是否相等
         return (taskAnno.async() == async ? async : true) == true ? true : Objects.nonNull(asyncAnno);
+    }
+
+    private boolean parseDistributed(Task taskAnno, Distributed distributedAnno) {
+        // 判断方法和类注解distributed字段值是否相等
+        return (taskAnno.distributed() == distributed ? distributed : true) == true ? true : Objects.nonNull(distributedAnno);
     }
 }

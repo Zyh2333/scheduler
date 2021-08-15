@@ -22,4 +22,6 @@ public @interface Task {
 
     boolean async() default false;
 
+    boolean distributed() default false;
+
 }

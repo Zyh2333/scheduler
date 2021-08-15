@@ -23,7 +23,7 @@ public abstract class AbstractDistributedTaskScheduler extends AbstractTaskSched
 
     public AbstractDistributedTaskScheduler() {
         this.producer = TaskSchedulerBean.getProducer();
-        this.redisTemplate = TaskSchedulerBean.getRedisTemplate();
+        this.redisTemplate = TaskSchedulerBean.getStringRedisTemplate();
     }
 
     @Override

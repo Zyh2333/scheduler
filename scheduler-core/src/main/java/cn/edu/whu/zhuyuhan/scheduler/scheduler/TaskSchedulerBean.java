@@ -16,6 +16,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -35,7 +36,7 @@ public class TaskSchedulerBean implements ApplicationContextAware {
 
     private static Producer producer;
 
-    private static RedisTemplate redisTemplate;
+    private static StringRedisTemplate stringRedisTemplate;
 
     public static final Integer DEFAULT_POOL_SIZE = 1;
 
@@ -86,14 +87,14 @@ public class TaskSchedulerBean implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         producer = applicationContext.getBean(Producer.class);
-        redisTemplate = applicationContext.getBean(RedisTemplate.class);
+        stringRedisTemplate = applicationContext.getBean(StringRedisTemplate.class);
     }
 
     public static Producer getProducer() {
         return producer;
     }
 
-    public static RedisTemplate getRedisTemplate() {
-        return redisTemplate;
+    public static RedisTemplate getStringRedisTemplate() {
+        return stringRedisTemplate;
     }
 }
