@@ -26,15 +26,7 @@ public class TaskSchedulerBeanProperties {
         this.threadSize = threadSize;
     }
 
-    public Boolean getOpen() {
-        return enabled;
-    }
-
-    public void setOpen(Boolean open) {
-        enabled = open;
-    }
-
-    public Boolean getEnabled() {
+    public Boolean isEnabled() {
         return enabled;
     }
 

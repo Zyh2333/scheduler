@@ -1,5 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.support;
 
+import cn.edu.whu.zhuyuhan.scheduler.common.constant.DistributedTaskSchedulerConstant;
 import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
 import cn.edu.whu.zhuyuhan.scheduler.common.util.TaskSchedulerUtils;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
@@ -30,7 +31,8 @@ public class DistributedAsyncTaskScheduler extends AbstractDistributedTaskSchedu
     public void scheduleInner(ScheduleComponentTaskInstance taskInstance) {
         String taskInstanceName = taskInstance.getName();
         Message message = new Message();
-        message.setTopic(TaskSchedulerUtils.createTopic(taskInstanceName));
+        message.setTopic(DistributedTaskSchedulerConstant.SCHEDULER_DEFAULT_TOPIC);
+        message.setTag(TaskSchedulerUtils.createTag(taskInstanceName));
 //        message.setBody(JSON.toJSONBytes(taskInstance));
 
         String cron = taskInstance.getCron();
@@ -49,7 +51,7 @@ public class DistributedAsyncTaskScheduler extends AbstractDistributedTaskSchedu
             }
         });
 
-        distributedConsumer.subscribe();
+        distributedConsumer.initMq();
 
         producer.sendAtFixedTimeAsync(message, start.getTime());
     }

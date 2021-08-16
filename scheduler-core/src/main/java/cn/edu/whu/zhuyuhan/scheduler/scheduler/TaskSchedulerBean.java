@@ -97,4 +97,8 @@ public class TaskSchedulerBean implements ApplicationContextAware {
     public static RedisTemplate getStringRedisTemplate() {
         return stringRedisTemplate;
     }
+
+    public static void setConfigPoolSize(Integer configPoolSize) {
+        CONFIG_POOL_SIZE = configPoolSize;
+    }
 }

@@ -14,8 +14,8 @@ public class TaskSchedulerUtils {
         return threadSize <= TaskSchedulerBean.MAX_POOL_SIZE;
     }
 
-    public static String createTopic(String topic) {
-        return DistributedTaskSchedulerConstant.TOPIC_PREFIX + topic;
+    public static String createTag(String tag) {
+        return DistributedTaskSchedulerConstant.TAG_PREFIX + tag;
     }
 
     public static String createGroup(String group) {

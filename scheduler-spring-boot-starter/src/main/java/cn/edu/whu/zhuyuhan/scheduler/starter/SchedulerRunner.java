@@ -1,6 +1,8 @@
 package cn.edu.whu.zhuyuhan.scheduler.starter;
 
+import cn.edu.whu.zhuyuhan.mq.rocketmq.producer.RocketMqProperties;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.distributed.DistributedConsumer;
 import cn.edu.whu.zhuyuhan.scheduler.starter.config.TaskSchedulerBeanProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -20,15 +22,21 @@ public class SchedulerRunner implements ApplicationRunner {
     @Autowired
     TaskSchedulerBeanProperties taskSchedulerBeanProperties;
 
+    @Autowired
+    RocketMqProperties rocketMqProperties;
+
+    @Autowired
+    TaskSchedulerBean taskSchedulerBean;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        if (!taskSchedulerBeanProperties.isEnabled()) return;
         this.initProperties(this.taskSchedulerBeanProperties);
-        TaskSchedulerBean taskSchedulerBean = new TaskSchedulerBean();
         taskSchedulerBean.schedule();
     }
 
     private void initProperties(TaskSchedulerBeanProperties taskSchedulerBeanProperties) {
-        if (!taskSchedulerBeanProperties.getOpen()) return;
-        TaskSchedulerBean.CONFIG_POOL_SIZE = taskSchedulerBeanProperties.getThreadSize();
+        TaskSchedulerBean.setConfigPoolSize(taskSchedulerBeanProperties.getThreadSize());
+        DistributedConsumer.setMqProperties(rocketMqProperties.getMqProperties());
     }
 }

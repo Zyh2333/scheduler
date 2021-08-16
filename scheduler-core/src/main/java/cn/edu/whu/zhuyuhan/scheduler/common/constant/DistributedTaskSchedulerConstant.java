@@ -7,10 +7,12 @@ package cn.edu.whu.zhuyuhan.scheduler.common.constant;
  **/
 public class DistributedTaskSchedulerConstant {
 
-    public static final String TOPIC_PREFIX = "T-Scheduler-";
+    public static final String TAG_PREFIX = "Tag-Scheduler-";
 
     public static final String CONSUMER_GROUP_PREFIX = "GID-Scheduler-";
 
     public static final String DEFAULT_TAG = "*";
+
+    public static final String SCHEDULER_DEFAULT_TOPIC = "T-Scheduler";
 
 }
