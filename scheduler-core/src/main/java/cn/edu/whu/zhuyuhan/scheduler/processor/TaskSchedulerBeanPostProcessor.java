@@ -1,5 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.processor;
 
+import cn.edu.whu.zhuyuhan.scheduler.Task;
 import cn.edu.whu.zhuyuhan.scheduler.common.util.AnnotationUtils;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.ScheduleComponentRegistrar;
 import org.springframework.beans.BeansException;
@@ -14,9 +15,7 @@ public class TaskSchedulerBeanPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (AnnotationUtils.isAnnotatedTaskSchedule(bean)) {
-            ScheduleComponentRegistrar.register(bean);
-        }
+        ScheduleComponentRegistrar.register(bean);
         return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
     }
 }

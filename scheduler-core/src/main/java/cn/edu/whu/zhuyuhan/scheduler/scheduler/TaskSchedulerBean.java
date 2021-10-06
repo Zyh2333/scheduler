@@ -5,6 +5,7 @@ import cn.edu.whu.zhuyuhan.scheduler.annotation.Async;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Distributed;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Special;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Task;
+import cn.edu.whu.zhuyuhan.scheduler.common.util.AnnotationUtils;
 import cn.edu.whu.zhuyuhan.scheduler.common.util.ReflectionUtils;
 import cn.edu.whu.zhuyuhan.scheduler.common.util.cron.CronUtils;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.ScheduleComponentRegistrar;
@@ -49,41 +50,54 @@ public class TaskSchedulerBean implements ApplicationContextAware {
     public void schedule() throws Exception {
         for (ScheduleComponent value : ScheduleComponentRegistrar.componentMap.values()) {
             // TODO 动态降级 (结合配置中心)
-            if (!value.isSchedule()) continue;
+            if (!value.isSchedule()) {
+                log.warn("ScheduleComponent bean is not open:{}", value.getBean());
+                continue;
+            }
             if (!this.schedule(value)) {
-                log.warn("ScheduleComponent bean inited with empty task: {}", value.getBean());
+                log.warn("ScheduleComponent bean inited with empty task:{}", value.getBean());
             }
         }
     }
 
     private boolean schedule(ScheduleComponent scheduleComponent) throws Exception {
-        List<Method> methods = ReflectionUtils.collectScheduleTask(scheduleComponent);
-        if (CollectionUtils.isEmpty(methods)) return false;
-        for (Method m : methods) {
-            // 方法注解重新覆盖类注解
-            Task taskAnno = m.getAnnotation(Task.class);
-            Async asyncAnno = m.getAnnotation(Async.class);
-            Distributed distributedAnno = m.getAnnotation(Distributed.class);
-            Special specialAnno = m.getAnnotation(Special.class);
-            scheduleComponent.addTask((Runnable) m.invoke(scheduleComponent.getBean()), taskAnno, asyncAnno, distributedAnno, specialAnno);
-            log.info("register task method {} in bean {} success", m, scheduleComponent.getBean());
-        }
-
-        // TODO 线程池资源管控
-        for (ScheduleComponentTaskInstance taskInstance : scheduleComponent.getTasks()) {
-            String cron = taskInstance.getCron();
-            if (StringUtils.isEmpty(cron) || !CronUtils.valid(cron)) {
-                Executor executor = Executors.newSingleThreadExecutor();
-                executor.execute(taskInstance.getTask());
-                continue;
+        Object bean = scheduleComponent.getBean();
+        if (AnnotationUtils.isAnnotatedTaskSchedule(bean)) {
+            List<Method> methods = ReflectionUtils.collectScheduleTask(scheduleComponent);
+            if (CollectionUtils.isEmpty(methods)) return false;
+            for (Method m : methods) {
+                // 方法注解重新覆盖类注解
+                Task taskAnno = m.getAnnotation(Task.class);
+                Async asyncAnno = m.getAnnotation(Async.class);
+                Distributed distributedAnno = m.getAnnotation(Distributed.class);
+                Special specialAnno = m.getAnnotation(Special.class);
+                scheduleComponent.addTask((Runnable) m.invoke(bean), taskAnno, asyncAnno, distributedAnno, specialAnno);
+                log.info("register task method {} in bean {} success", m, bean);
             }
 
-            Class<? extends Scheduler> taskSchedulerClass = TaskSchedulerFactory.getTaskScheduler(taskInstance.map());
-            // 默认newInstance会首先获取缓存的构造器
-            Scheduler scheduler = taskSchedulerClass.newInstance();
-            scheduler.schedule(taskInstance);
+            // TODO 线程池资源管控
+            for (ScheduleComponentTaskInstance taskInstance : scheduleComponent.getTasks()) {
+                this.schedule(taskInstance);
+            }
+        } else if (cn.edu.whu.zhuyuhan.scheduler.Task.class.isAssignableFrom(bean.getClass())) {
+            cn.edu.whu.zhuyuhan.scheduler.Task task = (cn.edu.whu.zhuyuhan.scheduler.Task) bean;
+            this.schedule(task.task());
         }
         return true;
+    }
+
+    private void schedule(ScheduleComponentTaskInstance taskInstance) throws Exception {
+        String cron = taskInstance.getCron();
+        if (StringUtils.isEmpty(cron) || !CronUtils.valid(cron)) {
+            Executor executor = Executors.newSingleThreadExecutor();
+            executor.execute(taskInstance.getTask());
+            return;
+        }
+
+        Class<? extends Scheduler> taskSchedulerClass = TaskSchedulerFactory.getTaskScheduler(taskInstance.map());
+        // 默认newInstance会首先获取缓存的构造器
+        Scheduler scheduler = taskSchedulerClass.newInstance();
+        scheduler.schedule(taskInstance);
     }
 
     @Override

@@ -80,6 +80,15 @@ public class ScheduleComponent {
         }
     }
 
+    public void addTask(cn.edu.whu.zhuyuhan.scheduler.Task task) {
+        ScheduleComponentTaskInstance taskInstance = task.task();
+        String taskInstanceName = taskInstance.getName();
+        if (scheduleComponentTaskInstanceMap.putIfAbsent(taskInstanceName, taskInstance) != null) {
+            log.warn("ScheduleComponentTaskInstance:{} register failed because of duplicated name:{}", taskInstance, taskInstanceName);
+        }
+        this.tasks.add(taskInstance);
+    }
+
     public String getCron() {
         return cron;
     }

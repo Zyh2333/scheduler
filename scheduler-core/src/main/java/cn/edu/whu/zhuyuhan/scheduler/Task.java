@@ -1,5 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler;
 
+import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
+
 /**
  * Author: Zhu yuhan
  * Email: zhuyuhan2333@qq.com
@@ -7,7 +9,7 @@ package cn.edu.whu.zhuyuhan.scheduler;
  **/
 public interface Task {
 
-    Runnable task();
+    ScheduleComponentTaskInstance task();
 
     // TODO 动态限流
     boolean isOpen();
