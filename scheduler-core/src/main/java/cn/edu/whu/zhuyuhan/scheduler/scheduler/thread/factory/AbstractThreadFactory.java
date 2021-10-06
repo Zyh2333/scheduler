@@ -1,4 +1,4 @@
-package cn.edu.whu.zhuyuhan.scheduler.thread.factory;
+package cn.edu.whu.zhuyuhan.scheduler.scheduler.thread.factory;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

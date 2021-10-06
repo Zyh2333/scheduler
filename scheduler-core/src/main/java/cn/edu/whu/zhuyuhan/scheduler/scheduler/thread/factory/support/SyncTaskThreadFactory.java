@@ -1,6 +1,6 @@
-package cn.edu.whu.zhuyuhan.scheduler.thread.factory.support;
+package cn.edu.whu.zhuyuhan.scheduler.scheduler.thread.factory.support;
 
-import cn.edu.whu.zhuyuhan.scheduler.thread.factory.AbstractThreadFactory;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.thread.factory.AbstractThreadFactory;
 
 /**
  * Author: Zhu yuhan

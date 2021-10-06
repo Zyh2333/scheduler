@@ -4,7 +4,7 @@ import cn.edu.whu.zhuyuhan.scheduler.common.constant.CronConstant;
 import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.AbstractTaskScheduler;
-import cn.edu.whu.zhuyuhan.scheduler.thread.factory.support.AsyncTaskThreadFactory;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.thread.factory.support.AsyncTaskThreadFactory;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.support.CronSequenceGenerator;

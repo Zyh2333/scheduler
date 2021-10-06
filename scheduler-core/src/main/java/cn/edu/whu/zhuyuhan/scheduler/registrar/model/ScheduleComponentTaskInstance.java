@@ -25,17 +25,20 @@ public class ScheduleComponentTaskInstance {
 
     private boolean distributed = false;
 
-    public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task, boolean distributed) {
+    private boolean isSpecial = false;
+
+    public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task, boolean distributed, boolean isSpecial) {
         this.parentName = parentName;
         this.name = StringUtils.isEmpty(name) ? parentName + PREFIX + count++ : name;
         this.cron = cron;
         this.async = async;
         this.task = task;
         this.distributed = distributed;
+        this.isSpecial = isSpecial;
     }
 
     public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task) {
-        this(parentName, name, cron, async, task, false);
+        this(parentName, name, cron, async, task, false, false);
     }
 
     public ScheduleComponentTaskInstance(String parentName, String cron, boolean async, Runnable task) {
@@ -68,6 +71,14 @@ public class ScheduleComponentTaskInstance {
 
     public Runnable getTask() {
         return task;
+    }
+
+    public boolean isSpecial() {
+        return isSpecial;
+    }
+
+    public void setSpecial(boolean special) {
+        isSpecial = special;
     }
 
     public void setTask(Runnable task) {

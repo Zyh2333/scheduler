@@ -19,7 +19,8 @@ public class SpringSyncCronTaskScheduler extends SpringSyncTaskScheduler {
         log.info("TaskScheduleComponent init success with {}", taskInstance);
         ScheduledTaskRegistrar scheduledTaskRegistrar = new ScheduledTaskRegistrar();
         org.springframework.scheduling.TaskScheduler taskScheduler;
-        ScheduledExecutorService executorService = getTaskExecutor() == null ? new ScheduledThreadPoolExecutor(getThreadSize(), getThreadFactory()) : getTaskExecutor();
+        ScheduledExecutorService taskExecutor = getTaskExecutor(taskInstance);
+        ScheduledExecutorService executorService = taskExecutor == null ? new ScheduledThreadPoolExecutor(getThreadSize(), getThreadFactory()) : taskExecutor;
         taskScheduler = new ConcurrentTaskScheduler(executorService);
         scheduledTaskRegistrar.setTaskScheduler(taskScheduler);
         scheduledTaskRegistrar.addCronTask(taskInstance.getTask(), taskInstance.getCron());

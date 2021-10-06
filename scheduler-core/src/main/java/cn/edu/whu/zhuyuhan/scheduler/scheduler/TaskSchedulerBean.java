@@ -3,6 +3,7 @@ package cn.edu.whu.zhuyuhan.scheduler.scheduler;
 import cn.edu.whu.zhuyuhan.mq.rocketmq.producer.Producer;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Async;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Distributed;
+import cn.edu.whu.zhuyuhan.scheduler.annotation.Special;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Task;
 import cn.edu.whu.zhuyuhan.scheduler.common.util.ReflectionUtils;
 import cn.edu.whu.zhuyuhan.scheduler.common.util.cron.CronUtils;
@@ -63,7 +64,8 @@ public class TaskSchedulerBean implements ApplicationContextAware {
             Task taskAnno = m.getAnnotation(Task.class);
             Async asyncAnno = m.getAnnotation(Async.class);
             Distributed distributedAnno = m.getAnnotation(Distributed.class);
-            scheduleComponent.addTask((Runnable) m.invoke(scheduleComponent.getBean()), taskAnno, asyncAnno, distributedAnno);
+            Special specialAnno = m.getAnnotation(Special.class);
+            scheduleComponent.addTask((Runnable) m.invoke(scheduleComponent.getBean()), taskAnno, asyncAnno, distributedAnno, specialAnno);
             log.info("register task method {} in bean {} success", m, scheduleComponent.getBean());
         }
 

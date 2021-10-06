@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  cn.edu.whu.zhuyuhan.scheduler.starter.SchedulerRunner,\
-  cn.edu.whu.zhuyuhan.scheduler.starter.config.SchedulerAutoConfigurer
+  cn.edu.whu.zhuyuhan.scheduler.starter.config.SchedulerAutoConfiguration

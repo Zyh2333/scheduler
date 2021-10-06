@@ -2,6 +2,7 @@ package cn.edu.whu.zhuyuhan.scheduler.registrar.model;
 
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Async;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Distributed;
+import cn.edu.whu.zhuyuhan.scheduler.annotation.Special;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class ScheduleComponent {
         this(null, cron, async, bean, schedule);
     }
 
-    public void addTask(Runnable task, Task taskAnno, Async asyncAnno, Distributed distributedAnno) {
+    public void addTask(Runnable task, Task taskAnno, Async asyncAnno, Distributed distributedAnno, Special specialAnno) {
         if (task != null) {
             ScheduleComponentTaskInstance taskInstance =
                     new ScheduleComponentTaskInstance(
@@ -68,7 +69,8 @@ public class ScheduleComponent {
                             StringUtils.isEmpty(taskAnno.cron()) ? cron : taskAnno.cron(),
                             this.parseAsync(taskAnno, asyncAnno),
                             task,
-                            this.parseDistributed(taskAnno, distributedAnno)
+                            this.parseDistributed(taskAnno, distributedAnno),
+                            specialAnno != null
                     );
             String taskInstanceName = taskInstance.getName();
             if (scheduleComponentTaskInstanceMap.putIfAbsent(taskInstanceName, taskInstance) != null) {

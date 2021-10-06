@@ -1,10 +1,13 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.support;
 
 import cn.edu.whu.zhuyuhan.scheduler.common.constant.TaskSchedulerKindConstant;
+import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.AbstractTaskScheduler;
-import cn.edu.whu.zhuyuhan.scheduler.thread.factory.support.SyncTaskThreadFactory;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.thread.factory.support.SyncTaskThreadFactory;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.thread.pool.SyncCommonThreadPoolExecutor;
 
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -21,8 +24,14 @@ public abstract class SyncTaskScheduler extends AbstractTaskScheduler {
         return TaskSchedulerKindConstant.SYNC_TASK_SCHEDULER;
     }
 
-    protected ScheduledExecutorService getTaskExecutor() {
-        return null;
+    /**
+     * sync task common thread pool
+     *
+     * @return if null, new a thread pool for each task, or use this common thread pool
+     */
+    protected ScheduledExecutorService getTaskExecutor(ScheduleComponentTaskInstance componentTaskInstance) {
+        if (componentTaskInstance.isSpecial()) return null;
+        return SyncCommonThreadPoolExecutor.SCHEDULED_THREAD_POOL_EXECUTOR;
     }
 
     @Override
