@@ -101,9 +101,14 @@ public class TaskSchedulerBean implements ApplicationContextAware {
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        producer = applicationContext.getBean(Producer.class);
-        stringRedisTemplate = applicationContext.getBean(StringRedisTemplate.class);
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        try {
+            producer = applicationContext.getBean(Producer.class);
+            stringRedisTemplate = applicationContext.getBean(StringRedisTemplate.class);
+        } catch (Exception e) {
+            producer = null;
+            stringRedisTemplate = null;
+        }
     }
 
     public static Producer getProducer() {
