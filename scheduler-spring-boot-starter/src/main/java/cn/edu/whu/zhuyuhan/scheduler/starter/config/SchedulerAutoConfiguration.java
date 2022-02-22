@@ -1,6 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler.starter.config;
 
-import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerTemplate;
+import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDAO;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.SchedulerTemplate;
 import cn.edu.whu.zhuyuhan.scheduler.processor.TaskSchedulerBeanPostProcessor;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.task.SchedulerTask;
@@ -26,7 +27,8 @@ public class SchedulerAutoConfiguration {
 
     @Bean
     public SchedulerTemplate schedulerTemplate(JdbcTemplate jdbcTemplate) {
-        SchedulerTemplate schedulerTemplate = new SchedulerTemplate(jdbcTemplate);
+        SchedulerDAO schedulerDAO = new SchedulerDAO(jdbcTemplate);
+        SchedulerTemplate schedulerTemplate = new SchedulerTemplate(schedulerDAO);
         SchedulerTask.setSchedulerTemplate(schedulerTemplate);
         return schedulerTemplate;
     }

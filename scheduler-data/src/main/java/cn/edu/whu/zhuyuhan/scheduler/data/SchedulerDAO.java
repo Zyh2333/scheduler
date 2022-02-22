@@ -3,18 +3,16 @@ package cn.edu.whu.zhuyuhan.scheduler.data;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.Date;
-
 /**
  * Author: Zhu yuhan
  * Email: zhuyuhan2333@qq.com
  * Date: 2022/2/22 12:27 下午
  **/
-public class SchedulerTemplate {
+public class SchedulerDAO {
 
     private JdbcTemplate jdbcTemplate;
 
-    public SchedulerTemplate(JdbcTemplate jdbcTemplate) {
+    public SchedulerDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

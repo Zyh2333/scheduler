@@ -1,7 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.context.task;
 
 import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDO;
-import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerTemplate;
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.SchedulerTemplate;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.TaskContext;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.TaskContextHolder;
@@ -50,6 +50,7 @@ public class SchedulerTask implements Runnable {
             schedulerDO.setGmtCreate(date);
             schedulerDO.setGmtUpdate(date);
         }
+        taskContext.setSchedulerDO(schedulerDO);
         taskContext.setBeginDate(System.currentTimeMillis());
         delegate.run();
         taskContext.setEndDate(System.currentTimeMillis());
