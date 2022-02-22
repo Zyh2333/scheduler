@@ -6,11 +6,10 @@
         <artifactId>scheduler</artifactId>
         <groupId>cn.edu.whu.zhuyuhan</groupId>
         <version>0.0.9</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>scheduler-spring-boot-starter</artifactId>
+    <artifactId>scheduler-data</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -19,23 +18,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.edu.whu.zhuyuhan</groupId>
-            <artifactId>scheduler-core</artifactId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.25</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-            <version>2.4.2</version>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>1.3.2</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>5.3.3</version>
-        </dependency>
-
     </dependencies>
 
 </project>
