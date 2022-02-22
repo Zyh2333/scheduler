@@ -7,7 +7,7 @@
     <groupId>cn.edu.whu.zhuyuhan</groupId>
     <artifactId>scheduler</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.6</version>
+    <version>0.0.9</version>
     <modules>
         <module>scheduler-core</module>
         <module>scheduler-spring-boot-starter</module>
@@ -16,7 +16,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <project.version>0.0.6</project.version>
+        <revision>0.0.9</revision>
     </properties>
 
     <dependencyManagement>
@@ -28,6 +28,12 @@
             </dependency>
 
             <dependency>
+                <groupId>cn.edu.whu.zhuyuhan</groupId>
+                <artifactId>scheduler-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>5.2.7.RELEASE</version>
@@ -35,14 +41,8 @@
 
             <dependency>
                 <groupId>cn.edu.whu.zhuyuhan</groupId>
-                <artifactId>scheduler-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.edu.whu.zhuyuhan</groupId>
                 <artifactId>rocket-mq-sdk</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>0.0.2</version>
             </dependency>
 
             <dependency>
@@ -52,5 +52,18 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>releases</name>
+            <url>http://central.horsecoder.com:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>snapshots</name>
+            <url>http://central.horsecoder.com:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

@@ -40,10 +40,9 @@ public class AsyncTaskScheduler extends AbstractTaskScheduler {
         log.info("TaskScheduleComponent inited success with taskInstance{}", taskInstance);
         AsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
         asyncTaskExecutor.submit(() -> {
-            Date start = new Date();
-            Date submitTime = start;
+            Date submitTime = new Date();
             while (true) {
-                // 如果提交任务时间与实际执行时间相差1s则继续循环
+                // 如果提交任务时间与实际执行时间相差0.1s则继续循环
                 if (Math.abs((submitTime.getTime() - new Date().getTime())) > CronConstant.MIN_SUBMIT_GAP) continue;
                 AsyncTaskExecutor asyncTaskExecutorInner = new SimpleAsyncTaskExecutor(getThreadFactory());
                 asyncTaskExecutorInner.submit(taskInstance.getTask());

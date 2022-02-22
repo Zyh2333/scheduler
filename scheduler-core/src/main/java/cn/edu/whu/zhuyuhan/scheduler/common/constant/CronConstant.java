@@ -9,5 +9,5 @@ public class CronConstant {
 
     public static final String EMPTY_CRON = "";
 
-    public static final long MIN_SUBMIT_GAP = 1000 * 1;
+    public static final long MIN_SUBMIT_GAP = 100;
 }
