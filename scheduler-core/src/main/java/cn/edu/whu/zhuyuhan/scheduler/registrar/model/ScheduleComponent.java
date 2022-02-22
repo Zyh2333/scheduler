@@ -25,7 +25,7 @@ public class ScheduleComponent {
 
     private static Integer count = 1;
 
-    private static final Map<String, ScheduleComponentTaskInstance> scheduleComponentTaskInstanceMap = new HashMap<>(MAX_COMPONENT << 2);
+    private final Map<String, ScheduleComponentTaskInstance> scheduleComponentTaskInstanceMap = new HashMap<>(MAX_COMPONENT << 2);
 
     private String name;
 
@@ -42,7 +42,7 @@ public class ScheduleComponent {
     private boolean distributed = false;
 
     public ScheduleComponent(String name, String cron, boolean async, Object bean, boolean schedule, boolean distributed) {
-        this.name = StringUtils.isEmpty(name) ? PREFIX + count++ : name;
+        this.name = StringUtils.isEmpty(name) ? PREFIX + count++ + "-" + bean.getClass().getSimpleName() : name;
         this.cron = cron;
         this.async = async;
         this.bean = bean;
@@ -65,7 +65,7 @@ public class ScheduleComponent {
             ScheduleComponentTaskInstance taskInstance =
                     new ScheduleComponentTaskInstance(
                             name,
-                            StringUtils.isEmpty(taskAnno.name()) ? null : taskAnno.name(),
+                            StringUtils.isEmpty(taskAnno.name()) ? (1 + tasks.size()) + "" : taskAnno.name(),
                             StringUtils.isEmpty(taskAnno.cron()) ? cron : taskAnno.cron(),
                             this.parseAsync(taskAnno, asyncAnno),
                             task,
@@ -74,9 +74,10 @@ public class ScheduleComponent {
                     );
             String taskInstanceName = taskInstance.getName();
             if (scheduleComponentTaskInstanceMap.putIfAbsent(taskInstanceName, taskInstance) != null) {
-                log.warn("ScheduleComponentTaskInstance:{} register failed because of duplicated name:{}", taskInstance, taskInstanceName);
+                log.error("ScheduleComponentTaskInstance:{} register failed because of duplicated name:{}", taskInstance, taskInstanceName);
+            } else {
+                this.tasks.add(taskInstance);
             }
-            this.tasks.add(taskInstance);
         }
     }
 
@@ -84,9 +85,10 @@ public class ScheduleComponent {
         ScheduleComponentTaskInstance taskInstance = task.task();
         String taskInstanceName = taskInstance.getName();
         if (scheduleComponentTaskInstanceMap.putIfAbsent(taskInstanceName, taskInstance) != null) {
-            log.warn("ScheduleComponentTaskInstance:{} register failed because of duplicated name:{}", taskInstance, taskInstanceName);
+            log.error("ScheduleComponentTaskInstance:{} register failed because of duplicated name:{}", taskInstance, taskInstanceName);
+        } else {
+            this.tasks.add(taskInstance);
         }
-        this.tasks.add(taskInstance);
     }
 
     public String getCron() {

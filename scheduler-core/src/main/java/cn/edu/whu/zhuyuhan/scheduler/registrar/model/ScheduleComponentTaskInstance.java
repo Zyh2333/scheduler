@@ -1,5 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.registrar.model;
 
+import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.task.SchedulerTask;
 import org.springframework.util.StringUtils;
 
 /**
@@ -21,7 +22,7 @@ public class ScheduleComponentTaskInstance {
 
     private boolean async;
 
-    private Runnable task;
+    private SchedulerTask task;
 
     private boolean distributed = false;
 
@@ -29,12 +30,12 @@ public class ScheduleComponentTaskInstance {
 
     public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task, boolean distributed, boolean isSpecial) {
         this.parentName = parentName;
-        this.name = StringUtils.isEmpty(name) ? parentName + PREFIX + count++ : name;
+        this.name = parentName + PREFIX + name;
         this.cron = cron;
         this.async = async;
-        this.task = task;
         this.distributed = distributed;
         this.isSpecial = isSpecial;
+        this.task = new SchedulerTask(task, this);
     }
 
     public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task) {
@@ -81,7 +82,7 @@ public class ScheduleComponentTaskInstance {
         isSpecial = special;
     }
 
-    public void setTask(Runnable task) {
+    public void setTask(SchedulerTask task) {
         this.task = task;
     }
 
