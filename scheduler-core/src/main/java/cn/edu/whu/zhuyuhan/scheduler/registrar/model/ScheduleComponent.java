@@ -42,7 +42,8 @@ public class ScheduleComponent {
     private boolean distributed = false;
 
     public ScheduleComponent(String name, String cron, boolean async, Object bean, boolean schedule, boolean distributed) {
-        this.name = StringUtils.isEmpty(name) ? PREFIX + count++ + "-" + bean.getClass().getSimpleName() : name;
+        this.name = StringUtils.isEmpty(name) ? bean.getClass().getSimpleName() : name;
+//        this.name = StringUtils.isEmpty(name) ? PREFIX + count++ + "-" + bean.getClass().getSimpleName() : name;
         this.cron = cron;
         this.async = async;
         this.bean = bean;
