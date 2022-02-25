@@ -30,7 +30,7 @@ public class ScheduleComponentTaskInstance {
 
     public ScheduleComponentTaskInstance(String parentName, String name, String cron, boolean async, Runnable task, boolean distributed, boolean isSpecial) {
         this.parentName = parentName;
-        this.name = parentName + PREFIX + name;
+        this.name = parentName + "-" + name;
         this.cron = cron;
         this.async = async;
         this.distributed = distributed;

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -43,7 +44,6 @@ public class ScheduleComponent {
 
     public ScheduleComponent(String name, String cron, boolean async, Object bean, boolean schedule, boolean distributed) {
         this.name = StringUtils.isEmpty(name) ? bean.getClass().getSimpleName() : name;
-//        this.name = StringUtils.isEmpty(name) ? PREFIX + count++ + "-" + bean.getClass().getSimpleName() : name;
         this.cron = cron;
         this.async = async;
         this.bean = bean;
@@ -61,12 +61,12 @@ public class ScheduleComponent {
         this(null, cron, async, bean, schedule);
     }
 
-    public void addTask(Runnable task, Task taskAnno, Async asyncAnno, Distributed distributedAnno, Special specialAnno) {
+    public void addTask(Method method, Runnable task, Task taskAnno, Async asyncAnno, Distributed distributedAnno, Special specialAnno) {
         if (task != null) {
             ScheduleComponentTaskInstance taskInstance =
                     new ScheduleComponentTaskInstance(
                             name,
-                            StringUtils.isEmpty(taskAnno.name()) ? (1 + tasks.size()) + "" : taskAnno.name(),
+                            StringUtils.isEmpty(taskAnno.name()) ? method.getName() + "" : taskAnno.name(),
                             StringUtils.isEmpty(taskAnno.cron()) ? cron : taskAnno.cron(),
                             this.parseAsync(taskAnno, asyncAnno),
                             task,

@@ -71,7 +71,7 @@ public class TaskSchedulerBean implements ApplicationContextAware {
                 Async asyncAnno = m.getAnnotation(Async.class);
                 Distributed distributedAnno = m.getAnnotation(Distributed.class);
                 Special specialAnno = m.getAnnotation(Special.class);
-                scheduleComponent.addTask((Runnable) m.invoke(bean), taskAnno, asyncAnno, distributedAnno, specialAnno);
+                scheduleComponent.addTask(m, (Runnable) m.invoke(bean), taskAnno, asyncAnno, distributedAnno, specialAnno);
                 log.info("register task method {} in bean {} success", m, bean);
             }
 
