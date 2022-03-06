@@ -25,7 +25,7 @@ public class SchedulerDAO {
 
     public int updateExecuteCountByPrimaryKey(SchedulerDO schedulerDO) {
         return jdbcTemplate.update("update scheduler set execute_count = ? where id = ?",
-                new Object[]{schedulerDO.getExecuteCount() + 1, schedulerDO.getId()});
+                new Object[]{schedulerDO.getExecuteCount(), schedulerDO.getId()});
     }
 
     public int insert(SchedulerDO schedulerDO) {

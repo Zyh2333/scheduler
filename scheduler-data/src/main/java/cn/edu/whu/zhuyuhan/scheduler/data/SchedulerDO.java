@@ -102,4 +102,18 @@ public class SchedulerDO {
     public void setGmtUpdate(Date gmtUpdate) {
         this.gmtUpdate = gmtUpdate;
     }
+
+    @Override
+    public String toString() {
+        return "SchedulerDO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", cron='" + cron + '\'' +
+                ", parentName='" + parentName + '\'' +
+                ", executeCount=" + executeCount +
+                ", status=" + status +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtUpdate=" + gmtUpdate +
+                '}';
+    }
 }

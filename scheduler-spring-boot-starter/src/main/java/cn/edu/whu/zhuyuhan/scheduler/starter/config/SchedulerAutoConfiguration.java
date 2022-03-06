@@ -29,7 +29,7 @@ public class SchedulerAutoConfiguration {
     public SchedulerTemplate schedulerTemplate(JdbcTemplate jdbcTemplate) {
         SchedulerDAO schedulerDAO = new SchedulerDAO(jdbcTemplate);
         SchedulerTemplate schedulerTemplate = new SchedulerTemplate(schedulerDAO);
-        SchedulerTask.setSchedulerTemplate(schedulerTemplate);
+        SchedulerTask.setSchedulerDAO(schedulerDAO);
         return schedulerTemplate;
     }
 

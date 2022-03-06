@@ -24,13 +24,9 @@ public class SchedulerTemplate {
         return schedulerDAO.getByName(name);
     }
 
-    public int updateExecuteCountByPrimaryKey(SchedulerDO schedulerDO) {
-        return schedulerDAO.updateExecuteCountByPrimaryKey(schedulerDO);
-    }
-
-    public int insert(SchedulerDO schedulerDO) {
-        return schedulerDAO.insert(schedulerDO);
-    }
+//    public int insert(SchedulerDO schedulerDO) {
+//        return schedulerDAO.insert(schedulerDO);
+//    }
 
     public Long getLastScheduleTime() {
         return TaskContextHolder.get().getSchedulerDO().getGmtUpdate().getTime();

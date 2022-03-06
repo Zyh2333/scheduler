@@ -1,6 +1,8 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.context.task;
 
+import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDAO;
 import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDO;
+import cn.edu.whu.zhuyuhan.scheduler.exception.SchedulerException;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.SchedulerTemplate;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.TaskContext;
@@ -25,7 +27,7 @@ public class SchedulerTask implements Runnable {
 
     private final ScheduleComponentTaskInstance taskInstance;
 
-    private static SchedulerTemplate schedulerTemplate;
+    private static SchedulerDAO schedulerDAO;
 
     public SchedulerTask(Runnable delegate, ScheduleComponentTaskInstance taskInstance) {
         this.delegate = delegate;
@@ -38,7 +40,7 @@ public class SchedulerTask implements Runnable {
         taskContext.setTaskInstance(taskInstance);
         SchedulerDO schedulerDO = null;
         try {
-            schedulerDO = schedulerTemplate.getByName(taskInstance.getName());
+            schedulerDO = schedulerDAO.getByName(taskInstance.getName());
         } catch (EmptyResultDataAccessException accessException) {
             LOGGER.info("init task:{} with record", taskInstance);
         }
@@ -49,25 +51,32 @@ public class SchedulerTask implements Runnable {
             Date date = new Date();
             schedulerDO.setGmtCreate(date);
             schedulerDO.setGmtUpdate(date);
+        } else {
+            schedulerDO.setExecuteCount(schedulerDO.getExecuteCount() + 1);
         }
         taskContext.setSchedulerDO(schedulerDO);
         taskContext.setBeginDate(System.currentTimeMillis());
-        delegate.run();
-        taskContext.setEndDate(System.currentTimeMillis());
-
-        // record
-        if (schedulerDO.getId() == null) {
-            schedulerTemplate.insert(schedulerDO);
-        } else {
-            schedulerTemplate.updateExecuteCountByPrimaryKey(schedulerDO);
+        try {
+            delegate.run();
+            taskContext.setEndDate(System.currentTimeMillis());
+            // record
+            if (schedulerDO.getId() == null) {
+                schedulerDAO.insert(schedulerDO);
+            } else {
+                schedulerDAO.updateExecuteCountByPrimaryKey(schedulerDO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SchedulerException(744, "schedule error occurred", schedulerDO);
+        } finally {
+            // release context
+            TaskContextHolder.remove();
         }
 
-        // release context
-        TaskContextHolder.remove();
     }
 
-    public static void setSchedulerTemplate(SchedulerTemplate schedulerTemplate) {
-        SchedulerTask.schedulerTemplate = schedulerTemplate;
+    public static void setSchedulerDAO(SchedulerDAO schedulerDAO) {
+        SchedulerTask.schedulerDAO = schedulerDAO;
     }
 
     @Override
