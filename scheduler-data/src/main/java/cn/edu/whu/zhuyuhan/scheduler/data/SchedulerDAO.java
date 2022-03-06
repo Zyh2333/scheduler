@@ -23,14 +23,14 @@ public class SchedulerDAO {
                 new BeanPropertyRowMapper<>(SchedulerDO.class));
     }
 
-    public int updateExecuteCountByPrimaryKey(SchedulerDO schedulerDO) {
-        return jdbcTemplate.update("update scheduler set execute_count = ? where id = ?",
-                new Object[]{schedulerDO.getExecuteCount(), schedulerDO.getId()});
+    public int updateExecuteByPrimaryKey(SchedulerDO schedulerDO) {
+        return jdbcTemplate.update("update scheduler set execute_count = ?, status = ? where id = ?",
+                new Object[]{schedulerDO.getExecuteCount(), schedulerDO.getStatus(), schedulerDO.getId()});
     }
 
     public int insert(SchedulerDO schedulerDO) {
-        return jdbcTemplate.update("insert into scheduler (name, cron, parent_name) values (?, ?, ?)",
-                new Object[]{schedulerDO.getName(), schedulerDO.getCron(), schedulerDO.getParentName()});
+        return jdbcTemplate.update("insert into scheduler (name, cron, parent_name, execute_count, status) values (?, ?, ?, ?, ?)",
+                new Object[]{schedulerDO.getName(), schedulerDO.getCron(), schedulerDO.getParentName(), schedulerDO.getExecuteCount(), schedulerDO.getStatus()});
     }
 
 }

@@ -3,7 +3,6 @@ package cn.edu.whu.zhuyuhan.scheduler.scheduler.context.task;
 import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDAO;
 import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDO;
 import cn.edu.whu.zhuyuhan.scheduler.exception.SchedulerException;
-import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.SchedulerTemplate;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.TaskContext;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.TaskContextHolder;
@@ -59,20 +58,45 @@ public class SchedulerTask implements Runnable {
         try {
             delegate.run();
             taskContext.setEndDate(System.currentTimeMillis());
-            // record
-            if (schedulerDO.getId() == null) {
-                schedulerDAO.insert(schedulerDO);
-            } else {
-                schedulerDAO.updateExecuteCountByPrimaryKey(schedulerDO);
-            }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new SchedulerException(744, "schedule error occurred", schedulerDO);
+            throw handleException(schedulerDO, e);
         } finally {
+            // record
+            handleRecord(schedulerDO);
             // release context
             TaskContextHolder.remove();
         }
 
+    }
+
+    private SchedulerException handleException(SchedulerDO schedulerDO, Exception e) {
+        e.printStackTrace();
+        // 暂时为失败不计入执行次数，并修改状态
+        schedulerDO.setStatus(1);
+        schedulerDO.setExecuteCount(schedulerDO.getExecuteCount() - 1);
+        LOGGER.warn("schedule task:{} status has been set with:{}", schedulerDO, ScheduleTaskStatus.STATUS_FAIL);
+        throw new SchedulerException(744, "schedule error occurred", schedulerDO);
+    }
+
+    private void handleRecord(SchedulerDO schedulerDO) {
+        // schedule success
+        if (TaskContextHolder.get().getEndDate() != null) {
+            // error before
+            if (schedulerDO.getStatus() == 1) {
+                schedulerDO.setStatus(0);
+                LOGGER.info("schedule task:{} status has been set with:{}", schedulerDO, ScheduleTaskStatus.STATUS_SUCCESS);
+            }
+        }
+        if (schedulerDO.getId() == null) {
+            schedulerDAO.insert(schedulerDO);
+        } else {
+            schedulerDAO.updateExecuteByPrimaryKey(schedulerDO);
+        }
+    }
+
+    public enum ScheduleTaskStatus {
+        STATUS_SUCCESS,
+        STATUS_FAIL;
     }
 
     public static void setSchedulerDAO(SchedulerDAO schedulerDAO) {
