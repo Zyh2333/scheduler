@@ -15,9 +15,13 @@ public enum TaskSchedulerEnum {
 
     SYNC_TASK_SCHEDULER(SpringSyncCronTaskScheduler.class, TaskSchedulerKindConstant.SYNC_TASK_SCHEDULER),
 
-    DISTRIBUTED_SYNC_TASK_SCHEDULER(DistributedSyncTaskScheduler.class, TaskSchedulerKindConstant.DISTRIBUTED_SYNC_TASK_SCHEDULER),
+//    DISTRIBUTED_SYNC_TASK_SCHEDULER(DistributedSyncTaskScheduler.class, TaskSchedulerKindConstant.DISTRIBUTED_SYNC_TASK_SCHEDULER),
+//
+//    DISTRIBUTED_ASYNC_TASK_SCHEDULER(DistributedAsyncTaskScheduler.class, TaskSchedulerKindConstant.DISTRIBUTED_ASYNC_TASK_SCHEDULER);
 
-    DISTRIBUTED_ASYNC_TASK_SCHEDULER(DistributedAsyncTaskScheduler.class, TaskSchedulerKindConstant.DISTRIBUTED_ASYNC_TASK_SCHEDULER);
+    DISTRIBUTED_SYNC_TASK_SCHEDULER(SpringSyncCronTaskScheduler.class, TaskSchedulerKindConstant.DISTRIBUTED_SYNC_TASK_SCHEDULER),
+
+    DISTRIBUTED_ASYNC_TASK_SCHEDULER(AsyncTaskScheduler.class, TaskSchedulerKindConstant.DISTRIBUTED_ASYNC_TASK_SCHEDULER);
 
     private Class<? extends Scheduler> taskScheduler;
 

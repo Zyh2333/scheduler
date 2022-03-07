@@ -1,9 +1,9 @@
 package cn.edu.whu.zhuyuhan.scheduler.starter.config;
 
 import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDAO;
+import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerLockDAO;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.SchedulerTemplate;
 import cn.edu.whu.zhuyuhan.scheduler.processor.TaskSchedulerBeanPostProcessor;
-import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.task.SchedulerTask;
 import cn.edu.whu.zhuyuhan.scheduler.starter.SchedulerRunner;
 import org.springframework.context.annotation.Bean;
@@ -21,16 +21,21 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class SchedulerAutoConfiguration {
 
     @Bean
-    public TaskSchedulerBean taskSchedulerBean() {
-        return new TaskSchedulerBean();
+    public SchedulerTemplate schedulerTemplate(SchedulerDAO schedulerDAO, SchedulerLockDAO schedulerLockDAO) {
+        SchedulerTemplate schedulerTemplate = new SchedulerTemplate(schedulerDAO);
+        SchedulerTask.setSchedulerDAO(schedulerDAO);
+        SchedulerTask.setSchedulerLockDAO(schedulerLockDAO);
+        return schedulerTemplate;
     }
 
     @Bean
-    public SchedulerTemplate schedulerTemplate(JdbcTemplate jdbcTemplate) {
-        SchedulerDAO schedulerDAO = new SchedulerDAO(jdbcTemplate);
-        SchedulerTemplate schedulerTemplate = new SchedulerTemplate(schedulerDAO);
-        SchedulerTask.setSchedulerDAO(schedulerDAO);
-        return schedulerTemplate;
+    public SchedulerDAO schedulerDAO(JdbcTemplate jdbcTemplate) {
+        return new SchedulerDAO(jdbcTemplate);
+    }
+
+    @Bean
+    public SchedulerLockDAO schedulerLockDAO(JdbcTemplate jdbcTemplate) {
+        return new SchedulerLockDAO(jdbcTemplate);
     }
 
 }

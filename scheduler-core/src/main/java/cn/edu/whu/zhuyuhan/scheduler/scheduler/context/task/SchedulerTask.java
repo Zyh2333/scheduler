@@ -1,15 +1,19 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.context.task;
 
+import cn.edu.whu.zhuyuhan.scheduler.common.util.cron.CronUtils;
 import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDAO;
 import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDO;
+import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerLockDAO;
+import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerLockDO;
 import cn.edu.whu.zhuyuhan.scheduler.exception.SchedulerException;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.TaskContext;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.TaskContextHolder;
-import cn.edu.whu.zhuyuhan.scheduler.util.SchedulerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.scheduling.support.CronSequenceGenerator;
 
 import java.util.Date;
 
@@ -28,6 +32,8 @@ public class SchedulerTask implements Runnable {
 
     private static SchedulerDAO schedulerDAO;
 
+    private static SchedulerLockDAO schedulerLockDAO;
+
     public SchedulerTask(Runnable delegate, ScheduleComponentTaskInstance taskInstance) {
         this.delegate = delegate;
         this.taskInstance = taskInstance;
@@ -40,19 +46,47 @@ public class SchedulerTask implements Runnable {
         SchedulerDO schedulerDO = null;
         try {
             schedulerDO = schedulerDAO.getByName(taskInstance.getName());
+            if (schedulerDO.getExecuteCount() == 0) {
+                schedulerDO.setGmtUpdate(new Date());
+            }
         } catch (EmptyResultDataAccessException accessException) {
-            LOGGER.info("init task:{} with record", taskInstance);
+            LOGGER.error("init task:{} failed because task is absent in db", taskInstance);
+            throw new SchedulerException(745, "task init error occurred", taskInstance.toString());
         }
-        if (schedulerDO == null) {
-            schedulerDO = SchedulerData.map(taskInstance);
-            schedulerDO.setStatus(0);
-            schedulerDO.setExecuteCount(1);
-            Date date = new Date();
-            schedulerDO.setGmtCreate(date);
-            schedulerDO.setGmtUpdate(date);
-        } else {
-            schedulerDO.setExecuteCount(schedulerDO.getExecuteCount() + 1);
+
+        // 这里使用悲观锁，在分布式任务场景下乐观锁不保险，网络延时/具体执行实例的线程阻塞都会影响调度结果
+        Long schedulerId = schedulerDO.getId();
+        try {
+            if (!taskInstance.isDistributed() || schedulerLockDAO.insert(new SchedulerLockDO(schedulerId)) > 0) {
+                taskContext.setLocked(true);
+                runInner(schedulerDO, taskContext);
+            }
+        } catch (DuplicateKeyException duplicateKeyException) {
+            LOGGER.info("task:{} get lock failed with schedulerId:{}", schedulerDO, schedulerId);
+        } finally {
+            if (taskInstance.isDistributed() && taskContext.getLocked()) {
+                // 需要保持一段时间再release锁，否则如果任务执行时间太短还是有很大冲突概率，但是也不能太久，否则影响下一个周期
+                new Thread(() -> {
+                    try {
+                        CronSequenceGenerator cronSequenceGenerator = new CronSequenceGenerator(taskInstance.getCron());
+                        Date next = cronSequenceGenerator.next(taskContext.getSchedulerDO().getGmtUpdate());
+                        Date date = new Date();
+                        if (next.before(date)) {
+                            throw new SchedulerException(746, "schedule too frequent to release the distributed lock");
+                        }
+                        Thread.sleep((next.getTime() - date.getTime()) / 2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        schedulerLockDAO.delete(schedulerId);
+                    }
+                }).start();
+            }
         }
+    }
+
+    private void runInner(SchedulerDO schedulerDO, TaskContext taskContext) {
+        schedulerDO.setExecuteCount(schedulerDO.getExecuteCount() + 1);
         taskContext.setSchedulerDO(schedulerDO);
         taskContext.setBeginDate(System.currentTimeMillis());
         try {
@@ -66,7 +100,6 @@ public class SchedulerTask implements Runnable {
             // release context
             TaskContextHolder.remove();
         }
-
     }
 
     private SchedulerException handleException(SchedulerDO schedulerDO, Exception e) {
@@ -87,11 +120,7 @@ public class SchedulerTask implements Runnable {
                 LOGGER.info("schedule task:{} status has been set with:{}", schedulerDO, ScheduleTaskStatus.STATUS_SUCCESS);
             }
         }
-        if (schedulerDO.getId() == null) {
-            schedulerDAO.insert(schedulerDO);
-        } else {
-            schedulerDAO.updateExecuteByPrimaryKey(schedulerDO);
-        }
+        schedulerDAO.updateExecuteByPrimaryKey(schedulerDO);
     }
 
     public enum ScheduleTaskStatus {
@@ -101,6 +130,10 @@ public class SchedulerTask implements Runnable {
 
     public static void setSchedulerDAO(SchedulerDAO schedulerDAO) {
         SchedulerTask.schedulerDAO = schedulerDAO;
+    }
+
+    public static void setSchedulerLockDAO(SchedulerLockDAO schedulerLockDAO) {
+        SchedulerTask.schedulerLockDAO = schedulerLockDAO;
     }
 
     @Override

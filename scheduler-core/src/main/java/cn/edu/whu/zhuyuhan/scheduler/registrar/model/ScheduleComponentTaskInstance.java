@@ -1,7 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.registrar.model;
 
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.context.task.SchedulerTask;
-import org.springframework.util.StringUtils;
 
 /**
  * Author: Zhu yuhan

@@ -15,6 +15,9 @@ public class SchedulerData {
         schedulerDO.setCron(taskInstance.getCron());
         schedulerDO.setName(taskInstance.getName());
         schedulerDO.setParentName(taskInstance.getParentName());
+        schedulerDO.setSpecial(taskInstance.isSpecial() ? 1 : 0);
+        schedulerDO.setSyncAsync(taskInstance.isAsync() ? 1 : 0);
+        schedulerDO.setDistributed(taskInstance.isDistributed() ? 1 : 0);
         return schedulerDO;
     }
 }

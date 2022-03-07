@@ -1,5 +1,6 @@
 package cn.edu.whu.zhuyuhan.scheduler.starter;
 
+import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDAO;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean;
 import cn.edu.whu.zhuyuhan.scheduler.starter.config.TaskSchedulerBeanProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,13 @@ public class SchedulerRunner implements ApplicationRunner {
     @Autowired
     TaskSchedulerBeanProperties taskSchedulerBeanProperties;
 
+    @Autowired
+    SchedulerDAO schedulerDAO;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         this.initProperties(this.taskSchedulerBeanProperties);
-        TaskSchedulerBean taskSchedulerBean = new TaskSchedulerBean();
+        TaskSchedulerBean taskSchedulerBean = new TaskSchedulerBean(schedulerDAO);
         taskSchedulerBean.schedule();
     }
 

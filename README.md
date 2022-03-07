@@ -90,7 +90,7 @@ when conflict between @TaskScheduleComponent @Task 's similar field, @Task first
 <dependency>
     <groupId>cn.edu.whu.zhuyuhan</groupId>
     <artifactId>scheduler-spring-boot-starter</artifactId>
-    <version>0.0.11</version>
+    <version>0.0.12</version>
 </dependency>
 ```
 

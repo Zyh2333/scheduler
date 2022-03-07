@@ -22,6 +22,8 @@ public class TaskContext {
 
     private SchedulerDO schedulerDO;
 
+    private Boolean isLocked = false;
+
     public TaskContext() {
     }
 
@@ -63,5 +65,13 @@ public class TaskContext {
 
     public void setTaskInstance(ScheduleComponentTaskInstance taskInstance) {
         this.taskInstance = taskInstance;
+    }
+
+    public Boolean getLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(Boolean locked) {
+        isLocked = locked;
     }
 }

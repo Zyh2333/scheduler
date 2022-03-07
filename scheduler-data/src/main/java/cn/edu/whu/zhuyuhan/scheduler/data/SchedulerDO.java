@@ -17,9 +17,18 @@ public class SchedulerDO {
 
     private String parentName;
 
+    // TODO: 2022/3/7 暂时为调度次数，分布式场景下作为执行次数有问题
     private Integer executeCount;
 
     private Integer status;
+
+    private Integer special;
+
+//    private Integer version;
+
+    private Integer distributed;
+
+    private Integer syncAsync;
 
     private Date gmtCreate;
 
@@ -103,15 +112,49 @@ public class SchedulerDO {
         this.gmtUpdate = gmtUpdate;
     }
 
+    public Integer getSpecial() {
+        return special;
+    }
+
+    public void setSpecial(Integer special) {
+        this.special = special;
+    }
+
+//    public Integer getVersion() {
+//        return version;
+//    }
+//
+//    public void setVersion(Integer version) {
+//        this.version = version;
+//    }
+
+    public Integer getDistributed() {
+        return distributed;
+    }
+
+    public void setDistributed(Integer distributed) {
+        this.distributed = distributed;
+    }
+
+    public Integer getSyncAsync() {
+        return syncAsync;
+    }
+
+    public void setSyncAsync(Integer syncAsync) {
+        this.syncAsync = syncAsync;
+    }
+
     @Override
     public String toString() {
         return "SchedulerDO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", cron='" + cron + '\'' +
                 ", parentName='" + parentName + '\'' +
                 ", executeCount=" + executeCount +
-                ", status=" + status +
+                ", status=" + (status == 0 ? "normal" : "error") +
+                ", special=" + (special == 0 ? "no" : "yes") +
+                ", distributed=" + (distributed == 0 ? "no" : "yes") +
+                ", syncAsync=" + (syncAsync == 0 ? "sync" : "async") +
                 ", gmtCreate=" + gmtCreate +
                 ", gmtUpdate=" + gmtUpdate +
                 '}';

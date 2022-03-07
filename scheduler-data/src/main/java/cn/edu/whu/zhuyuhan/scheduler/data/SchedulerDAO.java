@@ -25,12 +25,27 @@ public class SchedulerDAO {
 
     public int updateExecuteByPrimaryKey(SchedulerDO schedulerDO) {
         return jdbcTemplate.update("update scheduler set execute_count = ?, status = ? where id = ?",
-                new Object[]{schedulerDO.getExecuteCount(), schedulerDO.getStatus(), schedulerDO.getId()});
+                schedulerDO.getExecuteCount(), schedulerDO.getStatus(), schedulerDO.getId());
     }
 
+//    public int updateVersion(SchedulerDO schedulerDO) {
+//        return jdbcTemplate.update("update scheduler set version = ? where id = ? and version = ?",
+//                schedulerDO.getVersion() + 1, schedulerDO.getId(), schedulerDO.getVersion());
+//    }
+
     public int insert(SchedulerDO schedulerDO) {
-        return jdbcTemplate.update("insert into scheduler (name, cron, parent_name, execute_count, status) values (?, ?, ?, ?, ?)",
-                new Object[]{schedulerDO.getName(), schedulerDO.getCron(), schedulerDO.getParentName(), schedulerDO.getExecuteCount(), schedulerDO.getStatus()});
+        return jdbcTemplate.update("insert into scheduler (name, cron, parent_name, execute_count, status, special, distributed, sync_async) values (?, ?, ?, ?, ?, ?, ?, ?)",
+                schedulerDO.getName(), schedulerDO.getCron(),
+                schedulerDO.getParentName(), schedulerDO.getExecuteCount(),
+                schedulerDO.getStatus(), schedulerDO.getSpecial(),
+                schedulerDO.getDistributed(), schedulerDO.getSyncAsync());
+    }
+
+    public int updateMetadataByPrimaryKey(SchedulerDO schedulerDO) {
+        return jdbcTemplate.update("update scheduler set cron = ?, special = ?, distributed = ?, sync_async = ? where id = ?",
+                schedulerDO.getCron(), schedulerDO.getSpecial(),
+                schedulerDO.getDistributed(), schedulerDO.getSyncAsync(),
+                schedulerDO.getId());
     }
 
 }
