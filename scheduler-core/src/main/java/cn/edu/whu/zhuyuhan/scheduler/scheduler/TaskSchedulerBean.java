@@ -128,6 +128,7 @@ public class TaskSchedulerBean implements ApplicationContextAware {
             LOGGER.info("init task:{} with record", schedulerDO);
             return;
         }
+        schedulerDO.setCron(taskInstance.getCron());
         schedulerDO.setDistributed(taskInstance.isDistributed() ? 1 : 0);
         schedulerDO.setSpecial(taskInstance.isSpecial() ? 1 : 0);
         schedulerDO.setSyncAsync(taskInstance.isAsync() ? 1 : 0);
