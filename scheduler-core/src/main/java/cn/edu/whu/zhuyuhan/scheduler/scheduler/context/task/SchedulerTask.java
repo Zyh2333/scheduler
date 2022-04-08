@@ -73,7 +73,9 @@ public class SchedulerTask implements Runnable {
                         if (next.before(date)) {
                             throw new SchedulerException(746, "schedule too frequent to release the distributed lock");
                         }
-                        Thread.sleep((next.getTime() - date.getTime()) / 2);
+                        // 有 bug 查不出来是为啥，始终不释放锁
+//                        Thread.sleep((next.getTime() - date.getTime()) / 2);
+                        Thread.sleep(10000L);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } finally {
