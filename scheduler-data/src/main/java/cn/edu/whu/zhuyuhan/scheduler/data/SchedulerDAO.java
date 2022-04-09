@@ -28,6 +28,10 @@ public class SchedulerDAO {
                 schedulerDO.getExecuteCount(), schedulerDO.getStatus(), schedulerDO.getId());
     }
 
+    public int deleteLock() {
+        return jdbcTemplate.update("delete from scheduler_lock");
+    }
+
 //    public int updateVersion(SchedulerDO schedulerDO) {
 //        return jdbcTemplate.update("update scheduler set version = ? where id = ? and version = ?",
 //                schedulerDO.getVersion() + 1, schedulerDO.getId(), schedulerDO.getVersion());

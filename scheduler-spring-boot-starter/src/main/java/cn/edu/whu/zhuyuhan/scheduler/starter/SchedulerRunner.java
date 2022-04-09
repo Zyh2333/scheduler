@@ -3,6 +3,8 @@ package cn.edu.whu.zhuyuhan.scheduler.starter;
 import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDAO;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean;
 import cn.edu.whu.zhuyuhan.scheduler.starter.config.TaskSchedulerBeanProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -18,6 +20,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties({TaskSchedulerBeanProperties.class})
 public class SchedulerRunner implements ApplicationRunner {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerRunner.class);
+
     @Autowired
     TaskSchedulerBeanProperties taskSchedulerBeanProperties;
 
@@ -29,10 +33,18 @@ public class SchedulerRunner implements ApplicationRunner {
         this.initProperties(this.taskSchedulerBeanProperties);
         TaskSchedulerBean taskSchedulerBean = new TaskSchedulerBean(schedulerDAO);
         taskSchedulerBean.schedule();
+        safeShutdown();
     }
 
     private void initProperties(TaskSchedulerBeanProperties taskSchedulerBeanProperties) {
         if (!taskSchedulerBeanProperties.getOpen()) return;
         TaskSchedulerBean.CONFIG_POOL_SIZE = taskSchedulerBeanProperties.getThreadSize();
+    }
+
+    private void safeShutdown() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            schedulerDAO.deleteLock();
+            LOGGER.info("[SCHEDULER] success to release all lock before shutdown ");
+        }));
     }
 }
