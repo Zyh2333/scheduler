@@ -24,4 +24,8 @@ public class SchedulerLockDAO {
         return jdbcTemplate.update("delete from scheduler_lock where scheduler_id = ?", schedulerId);
     }
 
+    public int deleteLock() {
+        return jdbcTemplate.update("delete from scheduler_lock");
+    }
+
 }

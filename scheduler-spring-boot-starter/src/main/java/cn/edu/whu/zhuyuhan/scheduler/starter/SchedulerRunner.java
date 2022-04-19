@@ -1,6 +1,7 @@
 package cn.edu.whu.zhuyuhan.scheduler.starter;
 
 import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerDAO;
+import cn.edu.whu.zhuyuhan.scheduler.data.SchedulerLockDAO;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean;
 import cn.edu.whu.zhuyuhan.scheduler.starter.config.TaskSchedulerBeanProperties;
 import org.slf4j.Logger;
@@ -26,10 +27,15 @@ public class SchedulerRunner implements ApplicationRunner {
     TaskSchedulerBeanProperties taskSchedulerBeanProperties;
 
     @Autowired
+    SchedulerLockDAO schedulerLockDAO;
+
+    @Autowired
     SchedulerDAO schedulerDAO;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        // release lock when reboot
+        schedulerLockDAO.deleteLock();
         this.initProperties(this.taskSchedulerBeanProperties);
         TaskSchedulerBean taskSchedulerBean = new TaskSchedulerBean(schedulerDAO);
         taskSchedulerBean.schedule();
@@ -43,7 +49,7 @@ public class SchedulerRunner implements ApplicationRunner {
 
     private void safeShutdown() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            schedulerDAO.deleteLock();
+            schedulerLockDAO.deleteLock();
             LOGGER.info("[SCHEDULER] success to release all lock before shutdown ");
         }));
     }
