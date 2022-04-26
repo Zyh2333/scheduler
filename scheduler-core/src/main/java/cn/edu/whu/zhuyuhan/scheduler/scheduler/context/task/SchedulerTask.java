@@ -82,6 +82,7 @@ public class SchedulerTask implements Runnable {
                         schedulerLockDAO.delete(schedulerId);
                     }
                 }).start();
+                taskContext.setLocked(false);
             }
         }
     }
