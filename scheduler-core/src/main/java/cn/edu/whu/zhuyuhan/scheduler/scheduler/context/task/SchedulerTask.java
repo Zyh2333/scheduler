@@ -64,6 +64,7 @@ public class SchedulerTask implements Runnable {
             LOGGER.info("task:{} get lock failed with schedulerId:{}", schedulerDO, schedulerId);
         } finally {
             if (taskInstance.isDistributed() && taskContext.getLocked()) {
+                final SchedulerDO temp = schedulerDO;
                 // 需要保持一段时间再release锁，否则如果任务执行时间太短还是有很大冲突概率，但是也不能太久，否则影响下一个周期
                 new Thread(() -> {
                     try {
@@ -71,7 +72,7 @@ public class SchedulerTask implements Runnable {
                         Date next = cronSequenceGenerator.next(taskContext.getSchedulerDO().getGmtUpdate());
                         Date date = new Date();
                         if (next.before(date)) {
-                            throw new SchedulerException(746, "schedule too frequent to release the distributed lock");
+                            throw new SchedulerException(746, "schedule too frequent to release the distributed lock", temp);
                         }
                         // 有 bug 查不出来是为啥，始终不释放锁
 //                        Thread.sleep((next.getTime() - date.getTime()) / 2);
