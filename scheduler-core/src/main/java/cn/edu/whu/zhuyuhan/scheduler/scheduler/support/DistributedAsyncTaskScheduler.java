@@ -19,30 +19,6 @@ public class DistributedAsyncTaskScheduler extends AbstractDistributedTaskSchedu
 
     @Override
     public void scheduleInner(ScheduleComponentTaskInstance taskInstance) {
-//        String taskInstanceName = taskInstance.getName();
-//        Message message = new Message();
-//        message.setTopic(TaskSchedulerUtils.createTopic(taskInstanceName));
-////        message.setBody(JSON.toJSONBytes(taskInstance));
-//
-//        String cron = taskInstance.getCron();
-//        CronSequenceGenerator cronSequenceGenerator = new CronSequenceGenerator(cron);
-//        Date start = cronSequenceGenerator.next(new Date());
-//
-//        DistributedConsumer distributedConsumer = new DistributedConsumer(taskInstance, new MessageListener() {
-//            @Override
-//            public Action consume(Message message, ConsumeContext context) {
-////                ScheduleComponentTaskInstance taskInstance1 = JSONObject.parseObject(message.getBody(), ScheduleComponentTaskInstance.class);
-////                taskInstance1.getTask().run();
-//                taskInstance.getTask().run();
-//                Date next = cronSequenceGenerator.next(new Date(message.getStartDeliverTime()));
-//                producer.sendAtFixedTimeAsync(message, next.getTime());
-//                return Action.CommitMessage;
-//            }
-//        });
-//
-//        distributedConsumer.subscribe();
-//
-//        producer.sendAtFixedTimeAsync(message, start.getTime());
     }
 
 }

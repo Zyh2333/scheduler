@@ -47,12 +47,6 @@
             </dependency>
 
             <dependency>
-                <groupId>cn.edu.whu.zhuyuhan</groupId>
-                <artifactId>rocket-mq-sdk</artifactId>
-                <version>0.0.2</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>1.2.70</version>
