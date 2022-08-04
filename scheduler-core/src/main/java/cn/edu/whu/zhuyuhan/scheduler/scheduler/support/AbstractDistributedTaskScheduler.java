@@ -1,10 +1,8 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler.support;
 
-import cn.edu.whu.zhuyuhan.mq.rocketmq.producer.Producer;
 import cn.edu.whu.zhuyuhan.scheduler.registrar.model.ScheduleComponentTaskInstance;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.AbstractTaskScheduler;
 import cn.edu.whu.zhuyuhan.scheduler.scheduler.TaskSchedulerBean;
-import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.concurrent.ThreadFactory;
 
@@ -17,22 +15,16 @@ import java.util.concurrent.ThreadFactory;
  **/
 public abstract class AbstractDistributedTaskScheduler extends AbstractTaskScheduler {
 
-    protected Producer producer;
-
-    protected RedisTemplate redisTemplate;
-
     public AbstractDistributedTaskScheduler() {
-        this.producer = TaskSchedulerBean.getProducer();
-        this.redisTemplate = TaskSchedulerBean.getStringRedisTemplate();
     }
 
     @Override
     public void schedule(ScheduleComponentTaskInstance taskInstance) {
         String taskInstanceName = taskInstance.getName();
         try {
-            if (redisTemplate.opsForValue().setIfAbsent(taskInstanceName, "0")) {
+//            if (redisTemplate.opsForValue().setIfAbsent(taskInstanceName, "0")) {
                 scheduleInner(taskInstance);
-            }
+//            }
         } catch (Exception e) {
             log.error("redis lock fail with task:{}", taskInstance);
         } finally {

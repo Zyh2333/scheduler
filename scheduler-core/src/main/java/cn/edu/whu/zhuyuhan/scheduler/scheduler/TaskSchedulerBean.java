@@ -1,6 +1,5 @@
 package cn.edu.whu.zhuyuhan.scheduler.scheduler;
 
-import cn.edu.whu.zhuyuhan.mq.rocketmq.producer.Producer;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Async;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Distributed;
 import cn.edu.whu.zhuyuhan.scheduler.annotation.Special;
@@ -21,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -40,10 +37,6 @@ import java.util.concurrent.Executors;
 public class TaskSchedulerBean implements ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskSchedulerBean.class);
-
-    private static Producer producer;
-
-    private static StringRedisTemplate stringRedisTemplate;
 
     public static final Integer DEFAULT_POOL_SIZE = 1;
 
@@ -138,20 +131,13 @@ public class TaskSchedulerBean implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
-        try {
-            producer = applicationContext.getBean(Producer.class);
-            stringRedisTemplate = applicationContext.getBean(StringRedisTemplate.class);
-        } catch (Exception e) {
-            producer = null;
-            stringRedisTemplate = null;
-        }
+//        try {
+//            producer = applicationContext.getBean(Producer.class);
+//            stringRedisTemplate = applicationContext.getBean(StringRedisTemplate.class);
+//        } catch (Exception e) {
+//            producer = null;
+//            stringRedisTemplate = null;
+//        }
     }
 
-    public static Producer getProducer() {
-        return producer;
-    }
-
-    public static RedisTemplate getStringRedisTemplate() {
-        return stringRedisTemplate;
-    }
 }
